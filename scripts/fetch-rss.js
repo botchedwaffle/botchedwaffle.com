@@ -2,6 +2,9 @@
 const { createClient } = require('@supabase/supabase-js');
 const Parser = require('rss-parser');
 
+console.log('SUPABASE_URL:', process.env.SUPABASE_URL);
+console.log('SUPABASE_SERVICE_KEY set:', !!process.env.SUPABASE_SERVICE_KEY);
+
 const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_SERVICE_KEY
@@ -9,6 +12,18 @@ const supabase = createClient(
 
 async function fetchAndStore() {
   const parser = new Parser();
+
+  // Count total sources (any status)
+  const { count: totalCount, error: totalCountError } = await supabase
+    .from('rss_sources')
+    .select('id', { count: 'exact', head: true });
+
+  if (totalCountError) {
+    console.error('Error counting total sources:', totalCountError);
+    process.exit(1);
+  }
+
+  console.log(`Total sources found: ${totalCount ?? 0}`);
 
   const { data: sources, error: sourcesError } = await supabase
     .from('rss_sources')

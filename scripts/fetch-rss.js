@@ -2,8 +2,6 @@
 const { createClient } = require('@supabase/supabase-js');
 const Parser = require('rss-parser');
 
-console.log('SUPABASE_URL:', process.env.SUPABASE_URL);
-console.log('SUPABASE_SERVICE_KEY set:', !!process.env.SUPABASE_SERVICE_KEY);
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
@@ -23,7 +21,6 @@ async function fetchAndStore() {
     process.exit(1);
   }
 
-  console.log(`Total sources found: ${totalCount ?? 0}`);
 
   const { data: sources, error: sourcesError } = await supabase
     .from('rss_sources')

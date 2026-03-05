@@ -1,2 +1,2 @@
-# botchedwaffle..com
+# botchedwaffle.com
 Botched Waffle Website

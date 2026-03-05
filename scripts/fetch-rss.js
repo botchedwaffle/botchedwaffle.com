@@ -2,7 +2,6 @@
 const { createClient } = require('@supabase/supabase-js');
 const Parser = require('rss-parser');
 
-
 const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_SERVICE_KEY
@@ -10,17 +9,6 @@ const supabase = createClient(
 
 async function fetchAndStore() {
   const parser = new Parser();
-
-  // Count total sources (any status)
-  const { count: totalCount, error: totalCountError } = await supabase
-    .from('rss_sources')
-    .select('id', { count: 'exact', head: true });
-
-  if (totalCountError) {
-    console.error('Error counting total sources:', totalCountError);
-    process.exit(1);
-  }
-
 
   const { data: sources, error: sourcesError } = await supabase
     .from('rss_sources')
@@ -32,19 +20,16 @@ async function fetchAndStore() {
     process.exit(1);
   }
 
-  console.log(`Active sources found: ${sources?.length || 0}`);
-
   let totalAttempted = 0;
   let totalUpsertErrors = 0;
+  let feedParseFailures = 0;
 
   for (const source of sources || []) {
-    console.log(`Fetching: ${source.name} | ${source.url}`);
-
     let feed;
     try {
       feed = await parser.parseURL(source.url);
     } catch (e) {
-      console.error(`Feed parse failed for ${source.name}:`, e?.message || e);
+      feedParseFailures += 1;
       continue;
     }
 
@@ -58,7 +43,6 @@ async function fetchAndStore() {
       published_at: item.pubDate || new Date().toISOString()
     }));
 
-    console.log(`Items prepared for ${source.name}: ${articles.length}`);
     totalAttempted += articles.length;
 
     const { error: upsertError } = await supabase
@@ -67,11 +51,12 @@ async function fetchAndStore() {
 
     if (upsertError) {
       totalUpsertErrors += 1;
-      console.error(`Upsert error for ${source.name}:`, upsertError);
     }
   }
 
-  console.log(`Done. Articles attempted: ${totalAttempted}. Upsert errors: ${totalUpsertErrors}.`);
+  console.log(
+    `RSS fetch complete. Active sources: ${sources?.length || 0}. Articles attempted: ${totalAttempted}. Feed failures: ${feedParseFailures}. Upsert errors: ${totalUpsertErrors}.`
+  );
 }
 
 fetchAndStore();

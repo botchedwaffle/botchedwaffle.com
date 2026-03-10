@@ -876,6 +876,8 @@
   // Supabase config (anon key is OK for public read of published content)
   const SUPABASE_URL = "https://gujyarvouwvibdeklflc.supabase.co";
   const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd1anlhcnZvdXd2aWJkZWtsZmxjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI3MDkyNDcsImV4cCI6MjA4ODI4NTI0N30.r_NHJfI8XveGzZjXDm-bAbu3xEeSP3Eg5KqFo0y9CCY";
+    const sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
 
 
   function tagClass(section) {

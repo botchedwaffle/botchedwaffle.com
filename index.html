@@ -540,17 +540,407 @@
     }
   </style>
 
-<script defer src="https://cdn.jsdelivr.net/npm//supabase-js"></script>
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   
-<script defer src="https://cdn.jsdelivr.net/npm//supabase-js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
-<!-- rest of HTML omitted for brevity -->
+<!-- ═══════ MASTHEAD ═══════ -->
+<header>
+  <div class="masthead-top">
+    <span class="dateline" id="live-date">Loading...</span>
+    <span class="tagline-top">Independent · Curated · Daily</span>
+  </div>
+  <div class="masthead-logo">
+    <h1>Botched<span>Waffle</span></h1>
+    <p class="masthead-tagline">The morning digest you didn't know you needed</p>
+  </div>
+  <nav class="section-nav">
+    <a href="#top-stories" class="active">Top Stories</a>
+    <a href="#technology">Technology</a>
+    <a href="#finance">Finance</a>
+    <a href="#world">World</a>
+    <a href="#science">Science</a>
+    <a href="#culture">Culture</a>
+    <a href="#opinion">Opinion</a>
+  </nav>
+</header>
 
+<!-- ═══════ TICKER ═══════ -->
+<div class="ticker-bar">
+  <div class="ticker-inner" id="ticker">
+    <span class="ticker-label">Live</span>
+    <span class="ticker-item">Add your top headlines here — curated fresh each morning</span>
+    <span class="ticker-sep">◆</span>
+    <span class="ticker-item">Markets update · S&amp;P 500 / NASDAQ / DOW</span>
+    <span class="ticker-sep">◆</span>
+    <span class="ticker-item">Tech briefing · AI, software, and hardware roundup</span>
+    <span class="ticker-sep">◆</span>
+    <span class="ticker-item">World desk · International news in under 60 seconds</span>
+    <span class="ticker-sep">◆</span>
+    <!-- Duplicate for seamless loop -->
+    <span class="ticker-label">Live</span>
+    <span class="ticker-item">Add your top headlines here — curated fresh each morning</span>
+    <span class="ticker-sep">◆</span>
+    <span class="ticker-item">Markets update · S&amp;P 500 / NASDAQ / DOW</span>
+    <span class="ticker-sep">◆</span>
+    <span class="ticker-item">Tech briefing · AI, software, and hardware roundup</span>
+    <span class="ticker-sep">◆</span>
+    <span class="ticker-item">World desk · International news in under 60 seconds</span>
+    <span class="ticker-sep">◆</span>
+  </div>
+</div>
+
+<!-- ═══════ MAIN ═══════ -->
+<main>
+
+  <!-- SEARCH -->
+  <div class="search-row">
+    <input type="text" placeholder="Search headlines, topics, or sources…" />
+    <button>Search</button>
+  </div>
+
+  <!-- HERO SECTION -->
+  <section id="top-stories">
+    <div class="hero-grid">
+      <div class="hero-main">
+        <div class="img-placeholder">[ Featured Image ]</div>
+        <span class="feed-tag tag-world">World</span>
+        <h2 class="card-headline">Your Lead Story Headline Goes Right Here — Make It Count</h2>
+        <p class="card-deck">This is where your most important curated story of the day lives. A brief 2–3 sentence summary gives readers just enough context to decide whether to click through for the full piece. Keep it punchy and direct.</p>
+        <p class="card-meta"><strong>Source Name</strong> · 2 hours ago · 4 min read</p>
+      </div>
+      <div class="hero-side">
+        <div class="side-item">
+          <span class="feed-tag tag-tech">Tech</span>
+          <h3 class="card-headline">Second Most Important Story of the Day</h3>
+          <p class="card-meta"><strong>Source</strong> · 1 hour ago</p>
+        </div>
+        <div class="side-item">
+          <span class="feed-tag tag-finance">Finance</span>
+          <h3 class="card-headline">Third Story — Markets, Business, or Economy</h3>
+          <p class="card-meta"><strong>Source</strong> · 3 hours ago</p>
+        </div>
+        <div class="side-item">
+          <span class="feed-tag tag-science">Science</span>
+          <h3 class="card-headline">Fourth Story — Science, Health, or Environment</h3>
+          <p class="card-meta"><strong>Source</strong> · 5 hours ago</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TECHNOLOGY FEED -->
+  <section id="technology" class="feed-section">
+    <div class="section-header">
+      <h2>Technology</h2>
+      <span class="section-tag">AI · Software · Hardware · Policy</span>
+    </div>
+    <div class="feed-grid-3">
+      <div class="feed-card">
+        <span class="feed-tag tag-tech">Tech</span>
+        <h3 class="card-headline">Story headline placeholder for technology section</h3>
+        <p class="card-blurb">Brief summary of the article. Two to three sentences that capture the key point without giving everything away.</p>
+        <p class="card-meta"><strong>The Verge</strong> · 1 hr ago</p>
+        <br/><a class="read-more" href="#">Read more</a>
+      </div>
+      <div class="feed-card">
+        <span class="feed-tag tag-tech">Tech</span>
+        <h3 class="card-headline">Second technology story headline for this section</h3>
+        <p class="card-blurb">Brief summary of the article. Two to three sentences that capture the key point without giving everything away.</p>
+        <p class="card-meta"><strong>Wired</strong> · 2 hrs ago</p>
+        <br/><a class="read-more" href="#">Read more</a>
+      </div>
+      <div class="feed-card">
+        <span class="feed-tag tag-tech">Tech</span>
+        <h3 class="card-headline">Third technology story headline for this section</h3>
+        <p class="card-blurb">Brief summary of the article. Two to three sentences that capture the key point without giving everything away.</p>
+        <p class="card-meta"><strong>Ars Technica</strong> · 4 hrs ago</p>
+        <br/><a class="read-more" href="#">Read more</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINANCE FEED -->
+  <section id="finance" class="feed-section">
+    <div class="section-header">
+      <h2>Finance &amp; Markets</h2>
+      <span class="section-tag">Stocks · Economy · Crypto · Business</span>
+    </div>
+    <div class="feed-grid-3">
+      <div class="feed-card">
+        <span class="feed-tag tag-finance">Finance</span>
+        <h3 class="card-headline">Markets story placeholder — lead finance item today</h3>
+        <p class="card-blurb">Brief summary of the article. Two to three sentences that capture the key point without giving everything away.</p>
+        <p class="card-meta"><strong>FT</strong> · 30 min ago</p>
+        <br/><a class="read-more" href="#">Read more</a>
+      </div>
+      <div class="feed-card">
+        <span class="feed-tag tag-finance">Finance</span>
+        <h3 class="card-headline">Second finance story — economy, rates, or earnings</h3>
+        <p class="card-blurb">Brief summary of the article. Two to three sentences that capture the key point without giving everything away.</p>
+        <p class="card-meta"><strong>Bloomberg</strong> · 1 hr ago</p>
+        <br/><a class="read-more" href="#">Read more</a>
+      </div>
+      <div class="feed-card">
+        <span class="feed-tag tag-finance">Finance</span>
+        <h3 class="card-headline">Third finance story — business or corporate news</h3>
+        <p class="card-blurb">Brief summary of the article. Two to three sentences that capture the key point without giving everything away.</p>
+        <p class="card-meta"><strong>WSJ</strong> · 2 hrs ago</p>
+        <br/><a class="read-more" href="#">Read more</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- WORLD + SCIENCE 2-col -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-bottom:3rem;">
+    <section id="world" class="feed-section" style="margin-bottom:0;">
+      <div class="section-header">
+        <h2>World</h2>
+        <span class="section-tag">International</span>
+      </div>
+      <div class="feed-grid-2" style="grid-template-columns:1fr;">
+        <div class="feed-card">
+          <span class="feed-tag tag-world">World</span>
+          <h3 class="card-headline">International story one — geopolitics or diplomacy</h3>
+          <p class="card-meta"><strong>Reuters</strong> · 1 hr ago</p>
+          <br/><a class="read-more" href="#">Read more</a>
+        </div>
+        <div class="feed-card">
+          <span class="feed-tag tag-world">World</span>
+          <h3 class="card-headline">International story two — conflict, climate, or policy</h3>
+          <p class="card-meta"><strong>AP News</strong> · 3 hrs ago</p>
+          <br/><a class="read-more" href="#">Read more</a>
+        </div>
+        <div class="feed-card">
+          <span class="feed-tag tag-world">World</span>
+          <h3 class="card-headline">International story three — economics or elections</h3>
+          <p class="card-meta"><strong>BBC</strong> · 5 hrs ago</p>
+          <br/><a class="read-more" href="#">Read more</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="science" class="feed-section" style="margin-bottom:0;">
+      <div class="section-header">
+        <h2>Science</h2>
+        <span class="section-tag">Research · Health · Space</span>
+      </div>
+      <div class="feed-grid-2" style="grid-template-columns:1fr;">
+        <div class="feed-card">
+          <span class="feed-tag tag-science">Science</span>
+          <h3 class="card-headline">Science story one — research breakthrough or study</h3>
+          <p class="card-meta"><strong>Nature</strong> · 2 hrs ago</p>
+          <br/><a class="read-more" href="#">Read more</a>
+        </div>
+        <div class="feed-card">
+          <span class="feed-tag tag-science">Science</span>
+          <h3 class="card-headline">Science story two — health, medicine, or environment</h3>
+          <p class="card-meta"><strong>Science Mag</strong> · 4 hrs ago</p>
+          <br/><a class="read-more" href="#">Read more</a>
+        </div>
+        <div class="feed-card">
+          <span class="feed-tag tag-science">Science</span>
+          <h3 class="card-headline">Science story three — space, energy, or climate</h3>
+          <p class="card-meta"><strong>NASA / ESA</strong> · 6 hrs ago</p>
+          <br/><a class="read-more" href="#">Read more</a>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- OPINION BLOCK -->
+  <section id="opinion">
+    <div class="opinion-block">
+      <div class="block-header">Opinion &amp; Analysis</div>
+      <div class="opinion-card">
+        <h3 class="opinion-headline">"The argument nobody is making but everyone needs to hear right now"</h3>
+        <p class="opinion-blurb">A brief teaser that draws the reader into the argument. One or two sentences max.</p>
+        <p class="opinion-author">Author Name · Publication</p>
+      </div>
+      <div class="opinion-card">
+        <h3 class="opinion-headline">"Why everything you think you know about this topic is wrong"</h3>
+        <p class="opinion-blurb">A brief teaser that draws the reader into the argument. One or two sentences max.</p>
+        <p class="opinion-author">Author Name · Publication</p>
+      </div>
+      <div class="opinion-card">
+        <h3 class="opinion-headline">"The longer view: what history tells us about this moment"</h3>
+        <p class="opinion-blurb">A brief teaser that draws the reader into the argument. One or two sentences max.</p>
+        <p class="opinion-author">Author Name · Publication</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CULTURE FEED -->
+  <section id="culture" class="feed-section">
+    <div class="section-header">
+      <h2>Culture</h2>
+      <span class="section-tag">Books · Film · Music · Ideas</span>
+    </div>
+    <div class="feed-grid-3">
+      <div class="feed-card">
+        <span class="feed-tag tag-culture">Culture</span>
+        <h3 class="card-headline">Culture story one — books, ideas, or criticism</h3>
+        <p class="card-blurb">Brief summary of the article. Two to three sentences that capture the key point without giving everything away.</p>
+        <p class="card-meta"><strong>The Atlantic</strong> · Today</p>
+        <br/><a class="read-more" href="#">Read more</a>
+      </div>
+      <div class="feed-card">
+        <span class="feed-tag tag-culture">Culture</span>
+        <h3 class="card-headline">Culture story two — film, television, or media</h3>
+        <p class="card-blurb">Brief summary of the article. Two to three sentences that capture the key point without giving everything away.</p>
+        <p class="card-meta"><strong>NY Magazine</strong> · Today</p>
+        <br/><a class="read-more" href="#">Read more</a>
+      </div>
+      <div class="feed-card">
+        <span class="feed-tag tag-culture">Culture</span>
+        <h3 class="card-headline">Culture story three — music, art, or long reads</h3>
+        <p class="card-blurb">Brief summary of the article. Two to three sentences that capture the key point without giving everything away.</p>
+        <p class="card-meta"><strong>The Guardian</strong> · Today</p>
+        <br/><a class="read-more" href="#">Read more</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ═══════ FOOTER ═══════ -->
+<footer>
+  <div class="footer-brand">
+    <div class="brand-name">Botched<span>Waffle</span></div>
+    <p>A curated digest of the stories that matter. No algorithm. No clickbait. Just good journalism, found and filtered by hand.</p>
+  </div>
+  <div class="footer-col">
+    <h4>Sections</h4>
+    <ul>
+      <li>Top Stories</li>
+      <li>Technology</li>
+      <li>Finance &amp; Markets</li>
+      <li>World</li>
+      <li>Science</li>
+      <li>Culture &amp; Ideas</li>
+      <li>Opinion</li>
+    </ul>
+  </div>
+  <div class="footer-col">
+    <h4>About</h4>
+    <ul>
+      <li>About this site</li>
+      <li>How we curate</li>
+      <li>Sources we trust</li>
+      <li>Contact</li>
+      <li>Newsletter</li>
+    </ul>
+  </div>
+</footer>
+<div class="footer-bottom">
+  <p>© 2025 BotchedWaffle.com — Independent curation</p>
+  <p>No tracking · No ads · No nonsense</p>
+</div>
+
+<script>
+  // Live date in masthead
+  function updateDate() {
+    const now = new Date();
+    const opts = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    document.getElementById('live-date').textContent = now.toLocaleDateString('en-US', opts);
+  }
+  updateDate();
+
+  // Active nav highlight on scroll
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('nav.section-nav a');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        navLinks.forEach(a => a.classList.remove('active'));
+        const active = document.querySelector(`nav.section-nav a[href="#${entry.target.id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-40% 0px -55% 0px' });
+
+  sections.forEach(s => observer.observe(s));
+
+  // Search (placeholder behavior)
+  document.querySelector('.search-row button').addEventListener('click', () => {
+    const val = document.querySelector('.search-row input').value.trim();
+    if (val) alert(`Search for "${val}" — connect this to your news API or CMS.`);
+  });
+  
+</script>
+
+<script>
+  // Supabase config (anon key is OK for public read of published content)
+  const SUPABASE_URL = "https://gujyarvouwvibdeklflc.supabase.co";
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd1anlhcnZvdXd2aWJkZWtsZmxjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI3MDkyNDcsImV4cCI6MjA4ODI4NTI0N30.r_NHJfI8XveGzZjXDm-bAbu3xEeSP3Eg5KqFo0y9CCY";
+
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  function tagClass(section) {
+    const s = (section || "").toLowerCase();
+    if (s.includes("tech")) return "tag-tech";
+    if (s.includes("finance")) return "tag-finance";
+    if (s.includes("world")) return "tag-world";
+    if (s.includes("science")) return "tag-science";
+    if (s.includes("culture")) return "tag-culture";
+    return "tag-world";
+  }
+
+  function timeAgo(dateStr) {
+    if (!dateStr) return "";
+    const dt = new Date(dateStr);
+    const diffMs = Date.now() - dt.getTime();
+    const mins = Math.floor(diffMs / 60000);
+    if (mins < 60) return `${mins} min ago`;
+    const hrs = Math.floor(mins / 60);
+    if (hrs < 24) return `${hrs} hr ago`;
+    const days = Math.floor(hrs / 24);
+    return `${days} day${days === 1 ? "" : "s"} ago`;
+  }
+
+  async function loadPublished() {
+    const { data, error } = await supabase
+      .from("articles")
+      .select("headline, blurb, source_name, source_url, published_at, section, status")
+      .eq("status", "published")
+      .order("published_at", { ascending: false })
+      .limit(50);
+
+    if (error) {
+      console.error("Failed to load articles:", error.message);
+      return;
+    }
+
+    // For now, populate the Technology section cards as proof it works.
+    const tech = (data || [])
+      .filter(a => (a.section || "").toLowerCase().includes("tech"))
+      .slice(0, 3);
+
+    const techSection = document.querySelector("#technology .feed-grid-3");
+    if (!techSection) return;
+
+    if (tech.length === 0) {
+      techSection.innerHTML = `<div class="feed-card"><p>No published Technology articles yet.</p></div>`;
+      return;
+    }
+
+    techSection.innerHTML = tech.map(a => `
+      <div class="feed-card">
+        <span class="feed-tag ${tagClass(a.section)}">${a.section || "Tech"}</span>
+        <h3 class="card-headline">${a.headline || ""}</h3>
+        <p class="card-blurb">${a.blurb || ""}</p>
+        <p class="card-meta"><strong>${a.source_name || ""}</strong>${a.published_at ? " · " + timeAgo(a.published_at) : ""}</p>
+        ${a.source_url ? `<br/><a class="read-more" href="${a.source_url}" target="_blank" rel="noreferrer">Read more</a>` : ""}
+      </div>
+    `).join("");
+  }
+
+  loadPublished();
+</script>
+  
 <script>
   // Live date in masthead
   function updateDate() {
@@ -588,7 +978,6 @@
     });
   }
 </script>
-
 <script>
   // Supabase config (anon key is OK for public read of published content)
   const SUPABASE_URL = "https://gujyarvouwvibdeklflc.supabase.co";
@@ -619,7 +1008,7 @@
   }
 
   async function loadPublished() {
-    const { data, error } = await sbClient
+    const { data, error } = await supabase
       .from("articles")
       .select("headline, blurb, source_name, source_url, published_at, section, status")
       .eq("status", "published")
@@ -656,6 +1045,5 @@
 
   loadPublished();
 </script>
-  
 </body>
 </html>

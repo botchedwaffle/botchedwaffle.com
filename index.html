@@ -619,7 +619,7 @@
   }
 
   async function loadPublished() {
-    const { data, error } = await supabase
+    const { data, error } = await sbClient
       .from("articles")
       .select("headline, blurb, source_name, source_url, published_at, section, status")
       .eq("status", "published")

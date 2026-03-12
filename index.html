@@ -877,16 +877,26 @@
   const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd1anlhcnZvdXd2aWJkZWtsZmxjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI3MDkyNDcsImV4cCI6MjA4ODI4NTI0N30.r_NHJfI8XveGzZjXDm-bAbu3xEeSP3Eg5KqFo0y9CCY";
   const sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+  const SECTION_META = {
+    tech:    { label: "Technology", cls: "tag-tech"    },
+    curious: { label: "Science",    cls: "tag-science" },
+    mind:    { label: "Culture",    cls: "tag-culture" },
+    food:    { label: "Finance",    cls: "tag-finance" },
+    good:    { label: "World",      cls: "tag-world"   },
+    nature:  { label: "World",      cls: "tag-world"   },
+    origin:  { label: "Finance",    cls: "tag-finance" },
+  };
+
   function tagClass(section) {
     const s = (section || "").toLowerCase();
-    if (s.includes("tech"))    return "tag-tech";
-    if (s.includes("mind"))    return "tag-culture";
-    if (s.includes("curious")) return "tag-science";
-    if (s.includes("food"))    return "tag-world";
-    if (s.includes("good"))    return "tag-sage";
-    if (s.includes("nature"))  return "tag-world";
-    if (s.includes("origin"))  return "tag-finance";
-    return "tag-world";
+    const key = Object.keys(SECTION_META).find(k => s.includes(k));
+    return key ? SECTION_META[key].cls : "tag-world";
+  }
+
+  function tagLabel(section) {
+    const s = (section || "").toLowerCase();
+    const key = Object.keys(SECTION_META).find(k => s.includes(k));
+    return key ? SECTION_META[key].label : (section || "");
   }
 
   function timeAgo(dateStr) {
@@ -904,7 +914,7 @@
   function articleCard(a) {
     return `
       <div class="feed-card">
-        <span class="feed-tag ${tagClass(a.section)}">${a.section || ""}</span>
+        <span class="feed-tag ${tagClass(a.section)}">${tagLabel(a.section)}</span>
         <h3 class="card-headline">${a.headline || ""}</h3>
         <p class="card-blurb">${a.blurb || ""}</p>
         <p class="card-meta"><strong>${a.source_name || ""}</strong>${a.published_at ? " · " + timeAgo(a.published_at) : ""}</p>
@@ -939,11 +949,11 @@
     const bySection = (keyword, max) =>
       all.filter(a => (a.section || "").toLowerCase().includes(keyword)).slice(0, max);
 
-    fillSection("technology", bySection("tech", 7),    ".feed-grid-3");
-    fillSection("science",    bySection("curious", 7), ".feed-grid-2");
-    fillSection("culture",    bySection("mind", 7),    ".feed-grid-3");
-    fillSection("finance",    bySection("food", 7),    ".feed-grid-3");
-    fillSection("world",      bySection("good", 7),    ".feed-grid-2");
+    fillSection("technology", bySection("tech", 6),    ".feed-grid-3");
+    fillSection("science",    bySection("curious", 6), ".feed-grid-2");
+    fillSection("culture",    bySection("mind", 6),    ".feed-grid-3");
+    fillSection("finance",    bySection("food", 6),    ".feed-grid-3");
+    fillSection("world",      bySection("good", 6),    ".feed-grid-2");
   }
   
   loadArticles();

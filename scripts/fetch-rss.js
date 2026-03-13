@@ -7,6 +7,64 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_KEY
 );
 
+const TIER1_SOURCES = new Set([
+  'BBC News', 'Reuters', 'AP News', 'The Guardian', 'NPR',
+  'Ars Technica', 'Wired', 'The Verge', 'MIT Technology Review',
+  'Science', 'Nature', 'Scientific American', 'New Scientist',
+  'Smithsonian Magazine', 'National Geographic',
+  'The Atlantic', 'New York Times', 'Washington Post',
+  'Financial Times', 'Bloomberg', 'The Economist',
+]);
+
+const SECTION_KEYWORDS = {
+  'tech':            ['software', 'ai', 'data', 'cloud', 'developer', 'programming', 'tech', 'algorithm', 'cybersecurity', 'startup', 'hardware', 'code', 'internet', 'digital'],
+  'tech-ai':         ['software', 'ai', 'data', 'cloud', 'developer', 'programming', 'tech', 'algorithm', 'cybersecurity', 'startup', 'hardware', 'code', 'internet', 'digital'],
+  'curious':         ['history', 'discovery', 'ancient', 'mystery', 'science', 'research', 'study', 'found', 'origins', 'culture'],
+  'curious-history': ['history', 'discovery', 'ancient', 'mystery', 'science', 'research', 'study', 'found', 'origins', 'culture'],
+  'mind':            ['psychology', 'brain', 'mental', 'cognitive', 'behavior', 'emotion', 'therapy', 'stress', 'anxiety', 'habit'],
+  'human-mind':      ['psychology', 'brain', 'mental', 'cognitive', 'behavior', 'emotion', 'therapy', 'stress', 'anxiety', 'habit'],
+  'food':            ['food', 'recipe', 'cooking', 'restaurant', 'diet', 'nutrition', 'meal', 'flavor', 'ingredient', 'cuisine'],
+  'food-origins':    ['food', 'recipe', 'cooking', 'restaurant', 'diet', 'nutrition', 'meal', 'flavor', 'ingredient', 'cuisine'],
+  'good':            ['rescue', 'donation', 'volunteer', 'charity', 'community', 'breakthrough', 'hope', 'positive', 'success', 'achievement'],
+  'good-news':       ['rescue', 'donation', 'volunteer', 'charity', 'community', 'breakthrough', 'hope', 'positive', 'success', 'achievement'],
+  'nature-outdoors': ['nature', 'wildlife', 'environment', 'climate', 'ocean', 'forest', 'animal', 'conservation', 'outdoor', 'ecosystem'],
+  'origin-story':    ['origin', 'history', 'founding', 'creation', 'invented', 'first', 'story', 'began', 'started', 'developed'],
+};
+
+function scoreArticle(item, section, sourceName, blurb) {
+  let score = 0;
+
+  // 1. Blurb quality (0–3 pts)
+  const blurbLen = blurb.trim().length;
+  if      (blurbLen >= 150) score += 3;
+  else if (blurbLen >= 80)  score += 2;
+  else if (blurbLen >= 20)  score += 1;
+
+  // 2. Source reputation (0–3 pts)
+  if      (TIER1_SOURCES.has(sourceName)) score += 3;
+  else if (sourceName)                    score += 2;
+  else                                    score += 1;
+
+  // 3. Recency (0–2 pts)
+  const pubDate = item.pubDate ? new Date(item.pubDate) : null;
+  if (pubDate && !isNaN(pubDate)) {
+    const ageHrs = (Date.now() - pubDate.getTime()) / 36e5;
+    if      (ageHrs < 6)  score += 2;
+    else if (ageHrs < 24) score += 1;
+  }
+
+  // 4. Section relevance (0–2 pts)
+  const keywords = SECTION_KEYWORDS[section] || [];
+  if (keywords.length) {
+    const text = `${item.title || ''} ${blurb}`.toLowerCase();
+    const matches = keywords.filter(kw => text.includes(kw)).length;
+    if      (matches >= 2) score += 2;
+    else if (matches >= 1) score += 1;
+  }
+
+  return score;
+}
+
 async function fetchAndStore() {
   const parser = new Parser();
 
@@ -57,13 +115,22 @@ async function fetchAndStore() {
         if (blurb.trim().length < 20) { totalSkipped++; return false; }
         return true;
       })
-      .map(({ blurb, item }) => ({
+      .map(({ blurb, item }) => {
+        const score = scoreArticle(item, source.section, source.name, blurb);
+        return { blurb, item, score };
+      })
+      .filter(({ score, blurb }) => {
+        if (score === 0 || !blurb) { totalSkipped++; return false; }
+        return true;
+      })
+      .map(({ blurb, item, score }) => ({
         section: source.section,
         headline: item.title,
         blurb,
         source_name: source.name,
         source_url: item.link,
-        status: 'draft',
+        status: score >= 8 ? 'pipeline' : 'queue',
+        score,
         published_at: item.pubDate || new Date().toISOString()
       }));
 

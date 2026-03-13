@@ -1,1 +1,8 @@
 node_modules/
+
+# Local env files — never commit
+scripts/.env
+.env
+
+# One-time utility scripts — never commit
+scripts/backfill-images.js

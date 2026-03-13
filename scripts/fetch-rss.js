@@ -20,9 +20,18 @@ async function fetchAndStore() {
     process.exit(1);
   }
 
+  // Pre-fetch all existing source_urls once — used to skip duplicates before inserting
+  const { data: existingRows } = await supabase
+    .from('articles')
+    .select('source_url');
+  const existingUrls = new Set((existingRows || []).map(r => r.source_url));
+
   let totalAttempted = 0;
-  let totalUpsertErrors = 0;
+  let totalSkipped   = 0;
+  let totalInsertErrors = 0;
   let feedParseFailures = 0;
+
+  const BLURB_JUNK = ['Article URL:', 'Comments URL:', 'Points:', '# Comments'];
 
   for (const source of sources || []) {
     let feed;
@@ -33,10 +42,12 @@ async function fetchAndStore() {
       continue;
     }
 
-    const BLURB_JUNK = ['Article URL:', 'Comments URL:', 'Points:', '# Comments'];
-
     const articles = (feed.items || []).slice(0, 5)
       .filter(item => item.title && item.title.length >= 10)
+      .filter(item => {
+        if (!item.link || existingUrls.has(item.link)) { totalSkipped++; return false; }
+        return true;
+      })
       .map(item => {
         let blurb = item.contentSnippet?.slice(0, 300) || '';
         if (BLURB_JUNK.some(s => blurb.includes(s))) blurb = '';
@@ -51,19 +62,21 @@ async function fetchAndStore() {
         };
       });
 
+    if (!articles.length) continue;
+
     totalAttempted += articles.length;
 
-    const { error: upsertError } = await supabase
+    const { error: insertError } = await supabase
       .from('articles')
-      .upsert(articles, { onConflict: 'source_url', ignoreDuplicates: true });
+      .insert(articles);
 
-    if (upsertError) {
-      totalUpsertErrors += 1;
+    if (insertError) {
+      totalInsertErrors += 1;
     }
   }
 
   console.log(
-    `RSS fetch complete. Active sources: ${sources?.length || 0}. Articles attempted: ${totalAttempted}. Feed failures: ${feedParseFailures}. Upsert errors: ${totalUpsertErrors}.`
+    `RSS fetch complete. Active sources: ${sources?.length || 0}. New articles inserted: ${totalAttempted}. Duplicates skipped: ${totalSkipped}. Feed failures: ${feedParseFailures}. Insert errors: ${totalInsertErrors}.`
   );
 }
 

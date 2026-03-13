@@ -974,14 +974,21 @@
   const sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
   const SECTION_META = {
-    "tech":            { label: "Technology",        cls: "tag-tech"    },
-    "curious":         { label: "Curious Minds",     cls: "tag-science" },
-    "mind":            { label: "Human Mind",        cls: "tag-science" },
-    "food":            { label: "Food & Drink",      cls: "tag-finance" },
-    "good":            { label: "Good News",         cls: "tag-world"   },
-    "human-mind":      { label: "Human Mind",        cls: "tag-science" },
-    "nature-outdoors": { label: "Nature & Outdoors", cls: "tag-world"   },
-    "origin-story":    { label: "Origin Story",      cls: "tag-culture" },
+    // Active DB slugs
+    "tech-ai":         { label: "Technology",   cls: "tag-tech"    },
+    "curious-history": { label: "History",      cls: "tag-science" },
+    "mind-culture":    { label: "Culture",      cls: "tag-culture" },
+    "food-origins":    { label: "Food",         cls: "tag-finance" },
+    "good-news":       { label: "Good News",    cls: "tag-world"   },
+    "nature-outdoors": { label: "Nature",       cls: "tag-world"   },
+    "origin-story":    { label: "Origin",       cls: "tag-culture" },
+    "human-mind":      { label: "Mind",         cls: "tag-science" },
+    // Legacy slugs (kept for safety)
+    "tech":            { label: "Technology",   cls: "tag-tech"    },
+    "curious":         { label: "History",      cls: "tag-science" },
+    "mind":            { label: "Culture",      cls: "tag-culture" },
+    "food":            { label: "Food",         cls: "tag-finance" },
+    "good":            { label: "Good News",    cls: "tag-world"   },
   };
 
   function tagLabel(section) {

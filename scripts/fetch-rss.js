@@ -97,6 +97,7 @@ async function fetchAndStore() {
       feed = await parser.parseURL(source.url);
     } catch (e) {
       feedParseFailures += 1;
+      console.error(`[FEED ERROR] "${source.name}" — ${source.url} — ${e.message}`);
       continue;
     }
 
@@ -144,6 +145,7 @@ async function fetchAndStore() {
 
     if (insertError) {
       totalInsertErrors += 1;
+      console.error(`[INSERT ERROR] "${source.name}" — ${source.url} — ${insertError.message}`);
     }
   }
 

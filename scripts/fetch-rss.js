@@ -65,6 +65,21 @@ function scoreArticle(item, section, sourceName, blurb) {
   return score;
 }
 
+async function scrapeOgImage(articleUrl) {
+  try {
+    const res = await fetch(articleUrl, {
+      headers: { 'User-Agent': 'Mozilla/5.0' },
+      signal: AbortSignal.timeout(5000)
+    });
+    const html = await res.text();
+    const match = html.match(/<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)["']/i)
+                || html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:image["']/i);
+    return match ? match[1] : null;
+  } catch {
+    return null;
+  }
+}
+
 async function fetchAndStore() {
   const parser = new Parser();
 
@@ -143,11 +158,19 @@ async function fetchAndStore() {
 
     if (!articles.length) continue;
 
-    totalAttempted += articles.length;
+    // Scrape og:image for each article (best-effort, null if unavailable)
+    const articlesWithImages = await Promise.all(
+      articles.map(async (a) => ({
+        ...a,
+        image_url: await scrapeOgImage(a.source_url),
+      }))
+    );
+
+    totalAttempted += articlesWithImages.length;
 
     const { error: insertError } = await supabase
       .from('articles')
-      .insert(articles);
+      .insert(articlesWithImages);
 
     if (insertError) {
       totalInsertErrors += 1;

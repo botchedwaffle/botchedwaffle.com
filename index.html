@@ -485,6 +485,14 @@
       letter-spacing: 0.1em;
     }
 
+    .hero-image {
+      width: 100%;
+      aspect-ratio: 16/9;
+      background-size: cover;
+      background-position: center;
+      margin-bottom: 1rem;
+    }
+
     /* ─── SEARCH BAR ─── */
     .search-row {
       display: flex;
@@ -606,7 +614,6 @@
   <section id="top-stories">
     <div class="hero-grid">
       <div class="hero-main">
-        <div class="img-placeholder">[ Featured Image ]</div>
         <span class="feed-tag tag-world">World</span>
         <h2 class="card-headline">Your Lead Story Headline Goes Right Here — Make It Count</h2>
         <p class="card-deck">This is where your most important curated story of the day lives. A brief 2–3 sentence summary gives readers just enough context to decide whether to click through for the full piece. Keep it punchy and direct.</p>
@@ -993,7 +1000,7 @@
     if (heroMain && lead) {
       const meta = SECTION_META[lead.section] || {};
       heroMain.innerHTML = `
-        <div class="img-placeholder">[ Featured Image ]</div>
+        ${lead.image_url ? `<div class="hero-image" style="background-image:url('${lead.image_url}')"></div>` : ''}
         <span class="feed-tag ${meta.cls || 'tag-world'}">${tagLabel(lead.section)}</span>
         <h2 class="card-headline">${lead.headline || ''}</h2>
         ${lead.blurb ? `<p class="card-deck">${lead.blurb}</p>` : ''}

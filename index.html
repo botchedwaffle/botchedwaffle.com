@@ -1036,7 +1036,7 @@
   async function loadArticles() {
     const { data, error } = await sbClient
       .from("articles")
-      .select("headline, blurb, source_name, source_url, published_at, section, status")
+      .select("headline, blurb, source_name, source_url, published_at, section, status, image_url")
       .eq("status", "active")
       .order("published_at", { ascending: false })
       .limit(100);

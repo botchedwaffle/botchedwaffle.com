@@ -51,16 +51,21 @@ async function fetchAndStore() {
       .map(item => {
         let blurb = item.contentSnippet?.slice(0, 300) || '';
         if (BLURB_JUNK.some(s => blurb.includes(s))) blurb = '';
-        return {
-          section: source.section,
-          headline: item.title,
-          blurb,
-          source_name: source.name,
-          source_url: item.link,
-          status: 'draft',
-          published_at: item.pubDate || new Date().toISOString()
-        };
-      });
+        return { blurb, item };
+      })
+      .filter(({ blurb }) => {
+        if (blurb.trim().length < 20) { totalSkipped++; return false; }
+        return true;
+      })
+      .map(({ blurb, item }) => ({
+        section: source.section,
+        headline: item.title,
+        blurb,
+        source_name: source.name,
+        source_url: item.link,
+        status: 'draft',
+        published_at: item.pubDate || new Date().toISOString()
+      }));
 
     if (!articles.length) continue;
 

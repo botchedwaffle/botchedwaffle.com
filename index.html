@@ -1012,6 +1012,36 @@
       </div>`;
   }
 
+  function fillHero(articles) {
+    if (!articles.length) return;
+    const [lead, ...sides] = articles;
+
+    const heroMain = document.querySelector('.hero-main');
+    if (heroMain && lead) {
+      const meta = SECTION_META[lead.section] || {};
+      heroMain.innerHTML = `
+        <div class="img-placeholder">[ Featured Image ]</div>
+        <span class="feed-tag ${meta.cls || 'tag-world'}">${tagLabel(lead.section)}</span>
+        <h2 class="card-headline">${lead.headline || ''}</h2>
+        ${lead.blurb ? `<p class="card-deck">${lead.blurb}</p>` : ''}
+        <p class="card-meta"><strong>${lead.source_name || ''}</strong>${lead.published_at ? ' · ' + timeAgo(lead.published_at) : ''}</p>
+        ${lead.source_url ? `<br/><a class="read-more" href="${lead.source_url}" target="_blank" rel="noreferrer">Read more</a>` : ''}
+      `;
+    }
+
+    const sideItems = document.querySelectorAll('.hero-side .side-item');
+    sides.slice(0, 3).forEach((a, i) => {
+      if (!sideItems[i]) return;
+      const meta = SECTION_META[a.section] || {};
+      sideItems[i].innerHTML = `
+        <span class="feed-tag ${meta.cls || 'tag-world'}">${tagLabel(a.section)}</span>
+        <h3 class="card-headline">${a.headline || ''}</h3>
+        <p class="card-meta"><strong>${a.source_name || ''}</strong>${a.published_at ? ' · ' + timeAgo(a.published_at) : ''}</p>
+        ${a.source_url ? `<br/><a class="read-more" href="${a.source_url}" target="_blank" rel="noreferrer">Read more</a>` : ''}
+      `;
+    });
+  }
+
   function fillSection(sectionId, articles, gridSelector) {
     const grid = document.querySelector(`#${sectionId} ${gridSelector}`);
     if (!grid) return;
@@ -1039,6 +1069,7 @@
     const bySection = (keyword, max) =>
       all.filter(a => (a.section || "").toLowerCase().includes(keyword)).slice(0, max);
 
+    fillHero(all.slice(0, 4));
     fillSection("technology", bySection("tech", 6),    ".feed-grid-3");
     fillSection("science",    bySection("curious", 6), ".feed-grid-2");
     fillSection("culture",    bySection("mind", 6),    ".feed-grid-3");

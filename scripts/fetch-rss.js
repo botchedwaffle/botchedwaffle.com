@@ -68,10 +68,16 @@ function scoreArticle(item, section, sourceName, blurb) {
 async function fetchAndStore() {
   const parser = new Parser();
 
+  const VALID_SECTIONS = [
+    'tech-ai', 'curious-history', 'mind-culture', 'food-origins',
+    'good-news', 'nature-outdoors', 'origin-story', 'human-mind',
+  ];
+
   const { data: sources, error: sourcesError } = await supabase
     .from('rss_sources')
     .select('*')
-    .eq('active', true);
+    .eq('active', true)
+    .in('section', VALID_SECTIONS);
 
   if (sourcesError) {
     console.error('Error loading sources:', sourcesError);

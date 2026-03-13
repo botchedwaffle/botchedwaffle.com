@@ -316,6 +316,9 @@
       cursor: pointer;
       transition: background 0.15s;
       position: relative;
+      min-height: 220px;
+      display: flex;
+      flex-direction: column;
     }
 
     .feed-card:hover {
@@ -346,19 +349,11 @@
       color: var(--rust);
       font-weight: 500;
       text-decoration: none;
+      margin-top: auto;
     }
 
     .read-more::after {
       content: ' →';
-    }
-
-    /* ─── 2-COL EDITORIAL ─── */
-    .feed-grid-2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.5px;
-      background: var(--rule);
-      border: 1.5px solid var(--rule);
     }
 
     /* ─── OPINION / FEATURED ─── */
@@ -532,7 +527,6 @@
       .hero-grid { grid-template-columns: 1fr; }
       .hero-main { grid-column: 1; border-right: none; border-bottom: 1px solid var(--rule); }
       .feed-grid-3 { grid-template-columns: 1fr 1fr; }
-      .feed-grid-2 { grid-template-columns: 1fr; }
       .opinion-block { grid-template-columns: 1fr; }
       footer { grid-template-columns: 1fr; }
     }
@@ -644,7 +638,7 @@
       <h2>Science</h2>
       <span class="section-tag">Research · Health · Space</span>
     </div>
-    <div class="feed-grid-2">
+    <div class="feed-grid-3">
       <div class="feed-card">
         <span class="feed-tag tag-science">Science</span>
         <h3 class="card-headline">Science story one — research breakthrough or study</h3>
@@ -765,7 +759,7 @@
       <h2>Good News</h2>
       <span class="section-tag">International</span>
     </div>
-    <div class="feed-grid-2">
+    <div class="feed-grid-3">
       <div class="feed-card">
         <span class="feed-tag tag-world">World</span>
         <h3 class="card-headline">International story one — geopolitics or diplomacy</h3>
@@ -1049,11 +1043,11 @@
       all.filter(a => (a.section || "").toLowerCase().includes(keyword)).slice(0, max);
 
     fillHero(all.slice(0, 4));
-    fillSection("science",         bySection("curious",         6), ".feed-grid-2");
+    fillSection("science",         bySection("curious",         6), ".feed-grid-3");
     fillSection("technology",      bySection("tech",            6), ".feed-grid-3");
     fillSection("culture",         bySection("mind-culture",    6), ".feed-grid-3");
     fillSection("human-mind",      bySection("human-mind",      6), ".feed-grid-3");
-    fillSection("world",           bySection("good",            6), ".feed-grid-2");
+    fillSection("world",           bySection("good",            6), ".feed-grid-3");
     fillSection("nature-outdoors", bySection("nature-outdoors", 6), ".feed-grid-3");
     fillSection("origin-story",    bySection("origin-story",    6), ".feed-grid-3");
   }

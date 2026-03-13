@@ -24,7 +24,7 @@ const SECTION_KEYWORDS = {
   'mind':            ['psychology', 'brain', 'mental', 'cognitive', 'behavior', 'emotion', 'therapy', 'stress', 'anxiety', 'habit'],
   'human-mind':      ['psychology', 'brain', 'mental', 'cognitive', 'behavior', 'emotion', 'therapy', 'stress', 'anxiety', 'habit'],
   'food':            ['food', 'recipe', 'cooking', 'restaurant', 'diet', 'nutrition', 'meal', 'flavor', 'ingredient', 'cuisine'],
-  'food-origins':    ['food', 'recipe', 'cooking', 'restaurant', 'diet', 'nutrition', 'meal', 'flavor', 'ingredient', 'cuisine'],
+  'food-drink':      ['food', 'recipe', 'cooking', 'restaurant', 'diet', 'nutrition', 'meal', 'flavor', 'ingredient', 'cuisine'],
   'good':            ['rescue', 'donation', 'volunteer', 'charity', 'community', 'breakthrough', 'hope', 'positive', 'success', 'achievement'],
   'good-news':       ['rescue', 'donation', 'volunteer', 'charity', 'community', 'breakthrough', 'hope', 'positive', 'success', 'achievement'],
   'nature-outdoors': ['nature', 'wildlife', 'environment', 'climate', 'ocean', 'forest', 'animal', 'conservation', 'outdoor', 'ecosystem'],
@@ -84,7 +84,7 @@ async function fetchAndStore() {
   const parser = new Parser();
 
   const VALID_SECTIONS = [
-    'tech-ai', 'curious-history', 'mind-culture', 'food-origins',
+    'tech-ai', 'curious-history', 'mind-culture', 'food-drink',
     'good-news', 'nature-outdoors', 'origin-story', 'human-mind',
   ];
 

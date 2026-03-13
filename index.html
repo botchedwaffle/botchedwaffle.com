@@ -563,6 +563,9 @@
     <a href="#world">World</a>
     <a href="#science">Science</a>
     <a href="#culture">Culture</a>
+    <a href="#human-mind">Human Mind</a>
+    <a href="#nature-outdoors">Nature</a>
+    <a href="#origin-story">Origin Story</a>
     <a href="#opinion">Opinion</a>
   </nav>
 </header>
@@ -803,6 +806,99 @@
     </div>
   </section>
 
+  <!-- HUMAN MIND FEED -->
+  <section id="human-mind" class="feed-section">
+    <div class="section-header">
+      <h2>Human Mind</h2>
+      <span class="section-tag">Psychology · Behavior · Neuroscience</span>
+    </div>
+    <div class="feed-grid-3">
+      <div class="feed-card">
+        <span class="feed-tag tag-science">Human Mind</span>
+        <h3 class="card-headline">Human mind story placeholder — psychology or behavior</h3>
+        <p class="card-blurb">Brief summary of the article. Two to three sentences that capture the key point without giving everything away.</p>
+        <p class="card-meta"><strong>Source</strong> · Today</p>
+        <br/><a class="read-more" href="#">Read more</a>
+      </div>
+      <div class="feed-card">
+        <span class="feed-tag tag-science">Human Mind</span>
+        <h3 class="card-headline">Second human mind story — cognition or mental health</h3>
+        <p class="card-blurb">Brief summary of the article. Two to three sentences that capture the key point without giving everything away.</p>
+        <p class="card-meta"><strong>Source</strong> · Today</p>
+        <br/><a class="read-more" href="#">Read more</a>
+      </div>
+      <div class="feed-card">
+        <span class="feed-tag tag-science">Human Mind</span>
+        <h3 class="card-headline">Third human mind story — neuroscience or decision-making</h3>
+        <p class="card-blurb">Brief summary of the article. Two to three sentences that capture the key point without giving everything away.</p>
+        <p class="card-meta"><strong>Source</strong> · Today</p>
+        <br/><a class="read-more" href="#">Read more</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- NATURE & OUTDOORS FEED -->
+  <section id="nature-outdoors" class="feed-section">
+    <div class="section-header">
+      <h2>Nature &amp; Outdoors</h2>
+      <span class="section-tag">Wildlife · Environment · Adventure</span>
+    </div>
+    <div class="feed-grid-3">
+      <div class="feed-card">
+        <span class="feed-tag tag-world">Nature &amp; Outdoors</span>
+        <h3 class="card-headline">Nature story placeholder — wildlife or conservation</h3>
+        <p class="card-blurb">Brief summary of the article. Two to three sentences that capture the key point without giving everything away.</p>
+        <p class="card-meta"><strong>Source</strong> · Today</p>
+        <br/><a class="read-more" href="#">Read more</a>
+      </div>
+      <div class="feed-card">
+        <span class="feed-tag tag-world">Nature &amp; Outdoors</span>
+        <h3 class="card-headline">Second nature story — environment or outdoor adventure</h3>
+        <p class="card-blurb">Brief summary of the article. Two to three sentences that capture the key point without giving everything away.</p>
+        <p class="card-meta"><strong>Source</strong> · Today</p>
+        <br/><a class="read-more" href="#">Read more</a>
+      </div>
+      <div class="feed-card">
+        <span class="feed-tag tag-world">Nature &amp; Outdoors</span>
+        <h3 class="card-headline">Third nature story — ecosystems, climate, or exploration</h3>
+        <p class="card-blurb">Brief summary of the article. Two to three sentences that capture the key point without giving everything away.</p>
+        <p class="card-meta"><strong>Source</strong> · Today</p>
+        <br/><a class="read-more" href="#">Read more</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ORIGIN STORY FEED -->
+  <section id="origin-story" class="feed-section">
+    <div class="section-header">
+      <h2>Origin Story</h2>
+      <span class="section-tag">History · Founding · How It Started</span>
+    </div>
+    <div class="feed-grid-3">
+      <div class="feed-card">
+        <span class="feed-tag tag-culture">Origin Story</span>
+        <h3 class="card-headline">Origin story placeholder — how something began</h3>
+        <p class="card-blurb">Brief summary of the article. Two to three sentences that capture the key point without giving everything away.</p>
+        <p class="card-meta"><strong>Source</strong> · Today</p>
+        <br/><a class="read-more" href="#">Read more</a>
+      </div>
+      <div class="feed-card">
+        <span class="feed-tag tag-culture">Origin Story</span>
+        <h3 class="card-headline">Second origin story — founding, invention, or discovery</h3>
+        <p class="card-blurb">Brief summary of the article. Two to three sentences that capture the key point without giving everything away.</p>
+        <p class="card-meta"><strong>Source</strong> · Today</p>
+        <br/><a class="read-more" href="#">Read more</a>
+      </div>
+      <div class="feed-card">
+        <span class="feed-tag tag-culture">Origin Story</span>
+        <h3 class="card-headline">Third origin story — history, legacy, or unexpected beginnings</h3>
+        <p class="card-blurb">Brief summary of the article. Two to three sentences that capture the key point without giving everything away.</p>
+        <p class="card-meta"><strong>Source</strong> · Today</p>
+        <br/><a class="read-more" href="#">Read more</a>
+      </div>
+    </div>
+  </section>
+
 </main>
 
 <!-- ═══════ FOOTER ═══════ -->
@@ -878,25 +974,18 @@
   const sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
   const SECTION_META = {
-    tech:    { label: "Technology", cls: "tag-tech"    },
-    curious: { label: "Science",    cls: "tag-science" },
-    mind:    { label: "Culture",    cls: "tag-culture" },
-    food:    { label: "Finance",    cls: "tag-finance" },
-    good:    { label: "World",      cls: "tag-world"   },
-    nature:  { label: "World",      cls: "tag-world"   },
-    origin:  { label: "Finance",    cls: "tag-finance" },
+    "tech":            { label: "Technology",        cls: "tag-tech"    },
+    "curious":         { label: "Curious Minds",     cls: "tag-science" },
+    "mind":            { label: "Human Mind",        cls: "tag-science" },
+    "food":            { label: "Food & Drink",      cls: "tag-finance" },
+    "good":            { label: "Good News",         cls: "tag-world"   },
+    "human-mind":      { label: "Human Mind",        cls: "tag-science" },
+    "nature-outdoors": { label: "Nature & Outdoors", cls: "tag-world"   },
+    "origin-story":    { label: "Origin Story",      cls: "tag-culture" },
   };
 
-  function tagClass(section) {
-    const s = (section || "").toLowerCase();
-    const key = Object.keys(SECTION_META).find(k => s.includes(k));
-    return key ? SECTION_META[key].cls : "tag-world";
-  }
-
   function tagLabel(section) {
-    const s = (section || "").toLowerCase();
-    const key = Object.keys(SECTION_META).find(k => s.includes(k));
-    return key ? SECTION_META[key].label : (section || "");
+    return (SECTION_META[section] || {}).label || section || "";
   }
 
   function timeAgo(dateStr) {
@@ -912,9 +1001,10 @@
   }
 
   function articleCard(a) {
+    const meta = SECTION_META[a.section] || {};
     return `
       <div class="feed-card">
-        <span class="feed-tag ${tagClass(a.section)}">${tagLabel(a.section)}</span>
+        <span class="feed-tag ${meta.cls || "tag-world"}">${tagLabel(a.section)}</span>
         <h3 class="card-headline">${a.headline || ""}</h3>
         <p class="card-blurb">${a.blurb || ""}</p>
         <p class="card-meta"><strong>${a.source_name || ""}</strong>${a.published_at ? " · " + timeAgo(a.published_at) : ""}</p>
@@ -953,7 +1043,10 @@
     fillSection("science",    bySection("curious", 6), ".feed-grid-2");
     fillSection("culture",    bySection("mind", 6),    ".feed-grid-3");
     fillSection("finance",    bySection("food", 6),    ".feed-grid-3");
-    fillSection("world",      bySection("good", 6),    ".feed-grid-2");
+    fillSection("world",           bySection("good",            6), ".feed-grid-2");
+    fillSection("human-mind",      bySection("human-mind",      6), ".feed-grid-3");
+    fillSection("nature-outdoors", bySection("nature-outdoors", 6), ".feed-grid-3");
+    fillSection("origin-story",    bySection("origin-story",    6), ".feed-grid-3");
   }
   
   loadArticles();

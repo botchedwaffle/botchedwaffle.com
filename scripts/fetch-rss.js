@@ -33,15 +33,23 @@ async function fetchAndStore() {
       continue;
     }
 
-    const articles = (feed.items || []).slice(0, 5).map(item => ({
-      section: source.section,
-      headline: item.title,
-      blurb: item.contentSnippet?.slice(0, 300) || '',
-      source_name: source.name,
-      source_url: item.link,
-      status: 'draft',
-      published_at: item.pubDate || new Date().toISOString()
-    }));
+    const BLURB_JUNK = ['Article URL:', 'Comments URL:', 'Points:', '# Comments'];
+
+    const articles = (feed.items || []).slice(0, 5)
+      .filter(item => item.title && item.title.length >= 10)
+      .map(item => {
+        let blurb = item.contentSnippet?.slice(0, 300) || '';
+        if (BLURB_JUNK.some(s => blurb.includes(s))) blurb = '';
+        return {
+          section: source.section,
+          headline: item.title,
+          blurb,
+          source_name: source.name,
+          source_url: item.link,
+          status: 'draft',
+          published_at: item.pubDate || new Date().toISOString()
+        };
+      });
 
     totalAttempted += articles.length;
 

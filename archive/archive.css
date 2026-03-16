@@ -133,12 +133,10 @@ main {
   color: var(--muted);
 }
 
-/* ─── FEED GRID ─── */
+/* ─── FEED LIST (single-column stacked) ─── */
 .feed-grid-3 {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.5px;
-  background: var(--rule);
+  display: flex;
+  flex-direction: column;
   border: 1.5px solid var(--rule);
 }
 
@@ -149,8 +147,11 @@ main {
   transition: background 0.15s;
   display: flex;
   flex-direction: column;
-  min-height: 220px;
+  min-height: 120px;
+  border-bottom: 1px solid var(--rule);
 }
+
+.feed-card:last-child { border-bottom: none; }
 
 .feed-card:hover { background: var(--cream); }
 
@@ -252,7 +253,6 @@ main {
 
 /* ─── EMPTY STATE ─── */
 .empty-state {
-  grid-column: 1 / -1;
   padding: 3rem 2rem;
   text-align: center;
   font-family: 'DM Mono', monospace;
@@ -356,12 +356,10 @@ footer {
 
 /* ─── RESPONSIVE ─── */
 @media (max-width: 900px) {
-  .feed-grid-3 { grid-template-columns: 1fr 1fr; }
-  footer        { grid-template-columns: 1fr; }
+  footer { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 600px) {
-  .feed-grid-3    { grid-template-columns: 1fr; }
   .archive-topbar { padding: 0.75rem 1rem; }
   main            { padding: 1.5rem 1rem 3rem; }
 }

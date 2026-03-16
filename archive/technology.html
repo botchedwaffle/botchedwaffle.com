@@ -149,7 +149,11 @@
     }, { passive: true });
   }
 
-  document.querySelector('script[src*="supabase"]').addEventListener("load", initPage);
+  if (window.supabase) {
+    initPage();
+  } else {
+    document.querySelector('script[src*="supabase"]').addEventListener('load', initPage);
+  }
 </script>
 </body>
 </html>

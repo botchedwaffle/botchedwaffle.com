@@ -73,7 +73,7 @@
 
 <button class="back-to-top" id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑ Top</button>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 <script>
   const SECTION_SLUG    = "nature-outdoors";
   const SECTION_TAG_CLS = "tag-world";
@@ -120,10 +120,10 @@
       const grid = document.getElementById("article-grid");
       const { data, error } = await sbClient
         .from("articles")
-        .select("id, headline, blurb, source_url, source_name, section, score, score_reasoning, status, created_at")
+        .select("id, headline, blurb, source_url, source_name, section, score, score_reasoning, status, created_at, published_at")
         .eq("section", SECTION_SLUG)
         .in("status", ["active", "retired"])
-        .order("created_at", { ascending: false });
+        .order("published_at", { ascending: false });
 
       if (error) {
         console.error('Supabase error:', error);

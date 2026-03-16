@@ -73,7 +73,7 @@
 
 <button class="back-to-top" id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑ Top</button>
 
-<script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
   const SECTION_SLUG    = "tech-ai";
   const SECTION_TAG_CLS = "tag-tech";
@@ -125,10 +125,17 @@
         .in("status", ["active", "retired"])
         .order("created_at", { ascending: false });
 
-      if (error || !data || data.length === 0) {
+      if (error) {
+        console.error('Supabase error:', error);
+        grid.innerHTML = `<div class="empty-state">Error loading articles — check console.</div>`;
+        return;
+      }
+      if (!data || data.length === 0) {
+        console.warn('No articles returned for section:', SECTION_SLUG);
         grid.innerHTML = `<div class="empty-state">No articles found in this section yet — check back soon.</div>`;
         return;
       }
+      console.log('Loaded', data.length, 'articles for', SECTION_SLUG);
       grid.innerHTML = data.map(articleCard).join("");
     }
 

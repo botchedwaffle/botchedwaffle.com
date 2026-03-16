@@ -19,13 +19,13 @@ function daysAgo(n) {
 }
 
 // ─── Step 1 ──────────────────────────────────────────────────────────────────
-// Promote pipeline → active: status='pipeline' AND created_at older than 24 hrs
+// Promote pipeline → active: status='pipeline' AND created_at older than 6 hrs
 async function promoteToActive() {
   const { data, error } = await supabase
     .from('articles')
     .update({ status: 'active' })
     .eq('status', 'pipeline')
-    .lt('created_at', hoursAgo(24))
+    .lt('created_at', hoursAgo(6))
     .select('id');
 
   if (error) {

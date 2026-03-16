@@ -112,7 +112,7 @@
           </a>
           ${a.score_reasoning ? `<p class="card-reasoning">${a.score_reasoning}</p>` : ""}
           ${a.blurb           ? `<p class="card-blurb">${a.blurb}</p>` : ""}
-          <p class="card-meta"><strong>${a.source_name || ""}</strong>${a.created_at ? " · " + timeAgo(a.created_at) : ""}</p>
+          <p class="card-meta"><strong>${a.source_name || ""}</strong>${a.published_at ? " · " + timeAgo(a.published_at) : ""}</p>
         </div>`;
     }
 
@@ -120,7 +120,7 @@
       const grid = document.getElementById("article-grid");
       const { data, error } = await sbClient
         .from("articles")
-        .select("id, headline, blurb, source_url, source_name, section, score, score_reasoning, status, created_at, published_at")
+        .select("id, headline, blurb, source_url, source_name, section, score, score_reasoning, status, published_at")
         .eq("section", SECTION_SLUG)
         .in("status", ["active", "retired"])
         .order("published_at", { ascending: false });

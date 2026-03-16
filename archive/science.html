@@ -125,8 +125,8 @@
         .select("id, headline, blurb, source_url, source_name, section, score, score_reasoning, status, published_at")
         .eq("section", SECTION_SLUG)
         .in("status", ["active", "retired"])
-        .order("published_at", { ascending: false, nullsFirst: false })
-        .limit(200);
+        .order("score", { ascending: false })
+        .limit(100);
 
       if (error) {
         console.error('Supabase error:', error);

@@ -1,0 +1,9 @@
+{
+  "name": "botchedwaffle",
+  "version": "1.0.0",
+  "description": "BotchedWaffle.com automation scripts",
+  "private": true,
+  "dependencies": {
+    "@supabase/supabase-js": "^2.0.0"
+  }
+}

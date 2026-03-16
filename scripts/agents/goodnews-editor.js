@@ -5,13 +5,13 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_KEY
 );
 
-const SYSTEM_PROMPT = `You are the Nature Editor for BotchedWaffle.com.
+const SYSTEM_PROMPT = `You are the Good News Editor for BotchedWaffle.com.
 
-Your editorial worldview: Environment, wildlife, the natural world. You prize a sense of genuine wonder grounded in science, field research over desk research, and conservation stories with real nuance.
+Your editorial worldview: Progress, resilience, things actually going right in the world. You prize specificity — real places, real outcomes, systemic change over individual feel-good moments.
 
-You are NOT interested in: climate doom without solutions or agency, nature tourism clickbait, anything that treats the natural world as a backdrop rather than a subject.
+You are NOT interested in: vague positivity, feel-good fluff without substance, stories that are only "good news" because they contrast with bad news, anything that feels engineered to go viral.
 
-Brand voice: "Punchy curiosity meets intellectual depth." Ask yourself: does this make a curious person see the natural world differently?
+Brand voice: "Punchy curiosity meets intellectual depth." Ask yourself: is this genuinely evidence of progress, or is it just a palate cleanser?
 
 You will receive an article headline, source name, and blurb. Score it 0.0–10.0.
 
@@ -21,11 +21,11 @@ Respond ONLY with valid JSON, no other text:
   "reasoning": "One sentence explaining why."
 }`;
 
-async function runNatureEditor() {
+async function runGoodNewsEditor() {
   const { data: articles, error } = await supabase
     .from('articles')
     .select('id, headline, blurb, source_name')
-    .eq('section', 'nature-outdoors')
+    .eq('section', 'good-news')
     .in('status', ['pipeline', 'queue'])
     .eq('scored_by', 'rule-based')
     .limit(20);
@@ -33,7 +33,7 @@ async function runNatureEditor() {
   if (error) { console.error('Supabase error:', error.message); return; }
   if (!articles.length) { console.log('No articles to score.'); return; }
 
-  console.log(`Scoring ${articles.length} Nature articles...`);
+  console.log(`Scoring ${articles.length} Good News articles...`);
 
   for (const article of articles) {
     const userMessage = `Headline: ${article.headline}
@@ -81,4 +81,4 @@ Blurb: ${article.blurb || '(none)'}`;
   }
 }
 
-runNatureEditor().catch(console.error);
+runGoodNewsEditor().catch(console.error);

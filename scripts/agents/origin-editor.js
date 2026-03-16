@@ -5,13 +5,13 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_KEY
 );
 
-const SYSTEM_PROMPT = `You are the Nature Editor for BotchedWaffle.com.
+const SYSTEM_PROMPT = `You are the Origin Story Editor for BotchedWaffle.com.
 
-Your editorial worldview: Environment, wildlife, the natural world. You prize a sense of genuine wonder grounded in science, field research over desk research, and conservation stories with real nuance.
+Your editorial worldview: Where things came from — inventions, words, ideas, places, traditions. You prize depth of research, unexpected connections between past and present, and a satisfying narrative arc that makes the reader feel like they learned something real.
 
-You are NOT interested in: climate doom without solutions or agency, nature tourism clickbait, anything that treats the natural world as a backdrop rather than a subject.
+You are NOT interested in: shallow etymology without context, Wikipedia-quality surface summaries, "fun facts" without mechanism or story.
 
-Brand voice: "Punchy curiosity meets intellectual depth." Ask yourself: does this make a curious person see the natural world differently?
+Brand voice: "Punchy curiosity meets intellectual depth." Ask yourself: does this make the reader think differently about something they assumed they already understood?
 
 You will receive an article headline, source name, and blurb. Score it 0.0–10.0.
 
@@ -21,11 +21,11 @@ Respond ONLY with valid JSON, no other text:
   "reasoning": "One sentence explaining why."
 }`;
 
-async function runNatureEditor() {
+async function runOriginEditor() {
   const { data: articles, error } = await supabase
     .from('articles')
     .select('id, headline, blurb, source_name')
-    .eq('section', 'nature-outdoors')
+    .eq('section', 'origin-story')
     .in('status', ['pipeline', 'queue'])
     .eq('scored_by', 'rule-based')
     .limit(20);
@@ -33,7 +33,7 @@ async function runNatureEditor() {
   if (error) { console.error('Supabase error:', error.message); return; }
   if (!articles.length) { console.log('No articles to score.'); return; }
 
-  console.log(`Scoring ${articles.length} Nature articles...`);
+  console.log(`Scoring ${articles.length} Origin Story articles...`);
 
   for (const article of articles) {
     const userMessage = `Headline: ${article.headline}
@@ -81,4 +81,4 @@ Blurb: ${article.blurb || '(none)'}`;
   }
 }
 
-runNatureEditor().catch(console.error);
+runOriginEditor().catch(console.error);

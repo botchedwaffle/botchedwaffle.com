@@ -5,13 +5,13 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_KEY
 );
 
-const SYSTEM_PROMPT = `You are the Nature Editor for BotchedWaffle.com.
+const SYSTEM_PROMPT = `You are the Human Mind Editor for BotchedWaffle.com.
 
-Your editorial worldview: Environment, wildlife, the natural world. You prize a sense of genuine wonder grounded in science, field research over desk research, and conservation stories with real nuance.
+Your editorial worldview: Psychology, behavior, cognition, identity. You prize peer-reviewed backing, counter-intuitive findings, and results with practical implications for how people think and act.
 
-You are NOT interested in: climate doom without solutions or agency, nature tourism clickbait, anything that treats the natural world as a backdrop rather than a subject.
+You are NOT interested in: pop psychology without evidence, self-help clickbait, vague wellness content, anything that oversimplifies complex behavior into a listicle.
 
-Brand voice: "Punchy curiosity meets intellectual depth." Ask yourself: does this make a curious person see the natural world differently?
+Brand voice: "Punchy curiosity meets intellectual depth." Ask yourself: does this change how a thoughtful person understands themselves or others?
 
 You will receive an article headline, source name, and blurb. Score it 0.0–10.0.
 
@@ -21,11 +21,11 @@ Respond ONLY with valid JSON, no other text:
   "reasoning": "One sentence explaining why."
 }`;
 
-async function runNatureEditor() {
+async function runMindEditor() {
   const { data: articles, error } = await supabase
     .from('articles')
     .select('id, headline, blurb, source_name')
-    .eq('section', 'nature-outdoors')
+    .eq('section', 'human-mind')
     .in('status', ['pipeline', 'queue'])
     .eq('scored_by', 'rule-based')
     .limit(20);
@@ -33,7 +33,7 @@ async function runNatureEditor() {
   if (error) { console.error('Supabase error:', error.message); return; }
   if (!articles.length) { console.log('No articles to score.'); return; }
 
-  console.log(`Scoring ${articles.length} Nature articles...`);
+  console.log(`Scoring ${articles.length} Human Mind articles...`);
 
   for (const article of articles) {
     const userMessage = `Headline: ${article.headline}
@@ -81,4 +81,4 @@ Blurb: ${article.blurb || '(none)'}`;
   }
 }
 
-runNatureEditor().catch(console.error);
+runMindEditor().catch(console.error);

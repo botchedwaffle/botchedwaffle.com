@@ -64,7 +64,8 @@ Blurb: ${article.blurb || '(none)'}`;
       const raw = data.content?.[0]?.text;
       if (!raw) { console.error('Empty response for', article.id); continue; }
 
-      const parsed = JSON.parse(raw);
+      const cleaned = raw.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      const parsed = JSON.parse(cleaned);
 
       await supabase
         .from('articles')

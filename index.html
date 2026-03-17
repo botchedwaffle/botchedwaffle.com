@@ -315,7 +315,7 @@
 
     .feed-grid-3 {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(2, 1fr);
       gap: 1.5px;
       background: var(--rule);
       border: 1.5px solid var(--rule);
@@ -327,7 +327,7 @@
       cursor: pointer;
       transition: background 0.15s;
       position: relative;
-      min-height: 220px;
+      min-height: 260px;
       display: flex;
       flex-direction: column;
     }
@@ -556,7 +556,6 @@
     @media (max-width: 900px) {
       .hero-grid { grid-template-columns: 1fr; }
       .hero-main { grid-column: 1; border-right: none; border-bottom: 1px solid var(--rule); }
-      .feed-grid-3 { grid-template-columns: 1fr 1fr; }
       .opinion-block { grid-template-columns: 1fr; }
       footer { grid-template-columns: 1fr; }
     }

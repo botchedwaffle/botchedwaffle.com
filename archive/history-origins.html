@@ -27,6 +27,7 @@
 </header>
 
 <main>
+  <a href="https://botchedwaffle.com/" class="archive-breadcrumb">← Back to BotchedWaffle</a>
   <div class="section-hero">
     <h1>History &amp; Origins</h1>
     <p>Ancient civilizations, the history of ideas, and where things came from</p>
@@ -81,43 +82,34 @@
   function initPage() {
     const sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    function timeAgo(dateStr) {
+    function formatDate(dateStr) {
       if (!dateStr) return "";
-      const dt   = new Date(dateStr);
-      const mins = Math.floor((Date.now() - dt.getTime()) / 60000);
-      if (mins < 60)  return `${mins}m ago`;
-      const hrs = Math.floor(mins / 60);
-      if (hrs  < 24)  return `${hrs}h ago`;
-      const days = Math.floor(hrs / 24);
-      return `${days} day${days === 1 ? "" : "s"} ago`;
+      return new Date(dateStr).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
     }
 
     function articleCard(a) {
-      const score       = a.score != null ? Number(a.score).toFixed(1) : null;
       return `
-        <div class="feed-card">
-          <div class="card-badges">
-            <span class="feed-tag ${SECTION_TAG_CLS}">${SECTION_LABEL}</span>
-            ${score !== null ? `<span class="score-badge">${score}</span>` : ""}
-          </div>
-          <a href="${a.source_url || "#"}" target="_blank" rel="noopener noreferrer" class="headline-link">
-            <h3 class="card-headline">${a.headline || ""}</h3>
-          </a>
-          ${a.score_reasoning ? `<p class="card-reasoning">${a.score_reasoning}</p>` : ""}
-          ${a.blurb           ? `<p class="card-blurb">${a.blurb}</p>` : ""}
-          <p class="card-meta"><strong>${a.source_name || ""}</strong>${a.published_at ? " · " + timeAgo(a.published_at) : ""}</p>
-        </div>`;
+        <article class="archive-card">
+          ${a.image_url ? `<img class="archive-card-image" src="${a.image_url}" alt="${(a.headline || '').replace(/"/g, '&quot;')}" loading="lazy" onerror="this.style.display='none'" />` : ""}
+          <span class="archive-section-pill">${SECTION_LABEL}</span>
+          <h2 class="archive-headline">
+            <a href="${a.source_url || "#"}" target="_blank" rel="noopener noreferrer">${a.headline || ""}</a>
+          </h2>
+          ${a.blurb ? `<p class="archive-blurb">${a.blurb}</p>` : ""}
+          <p class="archive-meta"><strong>${a.source_name || ""}</strong>${a.published_at ? " · " + formatDate(a.published_at) : ""}</p>
+          <a href="${a.source_url || "#"}" target="_blank" rel="noopener noreferrer" class="archive-read-link">Read the full article →</a>
+        </article>`;
     }
 
     async function loadArticles() {
       const grid = document.getElementById("article-grid");
       const { data, error } = await sbClient
         .from("articles")
-        .select("id, headline, blurb, source_url, source_name, section, score, score_reasoning, status, published_at")
+        .select("headline, blurb, source_name, source_url, published_at, image_url, section")
         .eq("section", SECTION_SLUG)
-        .in("status", ["active", "retired"])
-        .order("score", { ascending: false })
-        .limit(100);
+        .eq("status", "retired")
+        .order("published_at", { ascending: false })
+        .limit(50);
 
       if (error) {
         console.error('Supabase error:', error);
@@ -126,7 +118,7 @@
       }
       if (!data || data.length === 0) {
         console.warn('No articles returned for section:', SECTION_SLUG);
-        grid.innerHTML = `<div class="empty-state">No articles found in this section yet — check back soon.</div>`;
+        grid.innerHTML = `<div class="empty-state">Nothing here yet — check back after the first articles rotate off the homepage.</div>`;
         return;
       }
       console.log('Loaded', data.length, 'articles for', SECTION_SLUG);
@@ -139,6 +131,8 @@
     window.addEventListener("scroll", () => {
       btn.classList.toggle("visible", window.scrollY > 400);
     }, { passive: true });
+  }
+
   }
 
   if (window.supabase) {

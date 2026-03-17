@@ -251,6 +251,98 @@ main {
   font-weight: 500;
 }
 
+/* ─── BREADCRUMB ─── */
+.archive-breadcrumb {
+  display: inline-block;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  text-decoration: none;
+  margin-bottom: 1.5rem;
+}
+.archive-breadcrumb:hover { color: var(--rust); }
+
+/* ─── ARCHIVE CARD (editorial layout) ─── */
+.archive-card {
+  padding: 2rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+.archive-card:first-child { padding-top: 0; }
+.archive-card:last-child  { border-bottom: none; }
+
+.archive-card-image {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: 3px;
+  display: block;
+  margin-bottom: 1.25rem;
+}
+
+.archive-section-pill {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  display: inline-block;
+  padding: 0.2rem 0.55rem;
+  border-radius: 2px;
+  background: var(--ink);
+  color: var(--paper);
+  margin-bottom: 0.65rem;
+}
+
+.archive-headline {
+  font-family: 'Playfair Display', serif;
+  font-weight: 700;
+  font-size: 1.4rem;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  margin-bottom: 0.6rem;
+}
+
+.archive-headline a {
+  color: var(--ink);
+  text-decoration: none;
+}
+.archive-headline a:hover { color: var(--rust); }
+
+.archive-blurb {
+  font-size: 14px;
+  color: #444;
+  line-height: 1.65;
+  margin-bottom: 0.85rem;
+}
+
+.archive-meta {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.85rem;
+}
+.archive-meta strong { color: var(--rust); font-weight: 500; }
+
+.archive-read-link {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink);
+  text-decoration: none;
+  border-bottom: 1px solid var(--ink);
+  padding-bottom: 1px;
+  transition: color 0.15s, border-color 0.15s;
+}
+.archive-read-link:hover {
+  color: var(--rust);
+  border-color: var(--rust);
+}
+
 /* ─── EMPTY STATE ─── */
 .empty-state {
   padding: 3rem 2rem;

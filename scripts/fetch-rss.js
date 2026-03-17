@@ -1,12 +1,17 @@
 // scripts/fetch-rss.js
 const { createClient } = require('@supabase/supabase-js');
-const Parser = require('rss-parser');
+const Parser           = require('rss-parser');
+const { scoreWithCCO } = require('./ai-scorer.js');
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_SERVICE_KEY
 );
 
+const DRY_RUN = process.env.DRY_RUN === 'true';
+if (DRY_RUN) console.log('[CCO] DRY RUN MODE — no database writes');
+
+// Source reputation — used as tiebreaker when CCO score lands exactly on a threshold
 const TIER1_SOURCES = new Set([
   'BBC News', 'Reuters', 'AP News', 'The Guardian', 'NPR',
   'Ars Technica', 'Wired', 'The Verge', 'MIT Technology Review',
@@ -16,48 +21,43 @@ const TIER1_SOURCES = new Set([
   'Financial Times', 'Bloomberg', 'The Economist',
 ]);
 
-const SECTION_KEYWORDS = {
-  'history-origins':     ['history', 'ancient', 'civilization', 'archaeology', 'origins', 'historical', 'century', 'dynasty', 'empire', 'medieval', 'origin', 'invention', 'how', 'why', 'created', 'founded', 'first', 'discovered', 'began', 'tradition', 'custom', 'ritual'],
-  'psychology-behavior': ['psychology', 'brain', 'neuroscience', 'cognition', 'memory', 'emotion', 'consciousness', 'mental', 'behavior', 'bias', 'identity', 'belief', 'social', 'philosophy', 'culture', 'society', 'perception', 'decision', 'habit', 'anxiety', 'attention', 'motivation'],
-  'science-nature':      ['nature', 'wildlife', 'environment', 'climate', 'species', 'ocean', 'forest', 'animal', 'plant', 'ecology', 'science', 'physics', 'engineering', 'biology', 'chemistry', 'geology', 'weather', 'space', 'how', 'works', 'explained', 'mechanism'],
-  'food-culture':        ['food', 'recipe', 'cuisine', 'ingredient', 'cooking', 'flavor', 'origin', 'dish', 'agricultural', 'spice', 'ferment', 'bread', 'culture', 'tradition', 'culinary', 'harvest', 'drink', 'meal', 'kitchen', 'history'],
-  'technology-systems':  ['ai', 'artificial intelligence', 'machine learning', 'robot', 'algorithm', 'software', 'tech', 'model', 'data', 'automation', 'infrastructure', 'grid', 'supply chain', 'privacy', 'surveillance', 'digital', 'system', 'network', 'internet', 'platform', 'cognitive', 'dependency'],
-  'rabbit-hole':         ['bizarre', 'fascinating', 'mysterious', 'deep dive', 'investigation', 'obscure', 'forgotten', 'strange', 'remarkable', 'unexplained', 'viral', 'visual', 'photo', 'infographic', 'data', 'chart'],
-};
-
-function scoreArticle(item, section, sourceName, blurb) {
-  let score = 0;
-
-  // 1. Blurb quality (0–3 pts)
-  const blurbLen = blurb.trim().length;
-  if      (blurbLen >= 150) score += 3;
-  else if (blurbLen >= 80)  score += 2;
-  else if (blurbLen >= 20)  score += 1;
-
-  // 2. Source reputation (0–3 pts)
-  if      (TIER1_SOURCES.has(sourceName)) score += 3;
-  else if (sourceName)                    score += 2;
-  else                                    score += 1;
-
-  // 3. Recency (0–2 pts)
-  const pubDate = item.pubDate ? new Date(item.pubDate) : null;
-  if (pubDate && !isNaN(pubDate)) {
-    const ageHrs = (Date.now() - pubDate.getTime()) / 36e5;
-    if      (ageHrs < 6)  score += 2;
-    else if (ageHrs < 24) score += 1;
-  }
-
-  // 4. Section relevance (0–2 pts)
-  const keywords = SECTION_KEYWORDS[section] || [];
-  if (keywords.length) {
-    const text = `${item.title || ''} ${blurb}`.toLowerCase();
-    const matches = keywords.filter(kw => text.includes(kw)).length;
-    if      (matches >= 2) score += 2;
-    else if (matches >= 1) score += 1;
-  }
-
-  return score;
-}
+// ─────────────────────────────────────────────────────────────────────────────
+// LEGACY: Rule-based scoring — kept as fallback reference
+// ─────────────────────────────────────────────────────────────────────────────
+// const SECTION_KEYWORDS = {
+//   'history-origins':     ['history', 'ancient', 'civilization', 'archaeology', 'origins', 'historical', 'century', 'dynasty', 'empire', 'medieval', 'origin', 'invention', 'how', 'why', 'created', 'founded', 'first', 'discovered', 'began', 'tradition', 'custom', 'ritual'],
+//   'psychology-behavior': ['psychology', 'brain', 'neuroscience', 'cognition', 'memory', 'emotion', 'consciousness', 'mental', 'behavior', 'bias', 'identity', 'belief', 'social', 'philosophy', 'culture', 'society', 'perception', 'decision', 'habit', 'anxiety', 'attention', 'motivation'],
+//   'science-nature':      ['nature', 'wildlife', 'environment', 'climate', 'species', 'ocean', 'forest', 'animal', 'plant', 'ecology', 'science', 'physics', 'engineering', 'biology', 'chemistry', 'geology', 'weather', 'space', 'how', 'works', 'explained', 'mechanism'],
+//   'food-culture':        ['food', 'recipe', 'cuisine', 'ingredient', 'cooking', 'flavor', 'origin', 'dish', 'agricultural', 'spice', 'ferment', 'bread', 'culture', 'tradition', 'culinary', 'harvest', 'drink', 'meal', 'kitchen', 'history'],
+//   'technology-systems':  ['ai', 'artificial intelligence', 'machine learning', 'robot', 'algorithm', 'software', 'tech', 'model', 'data', 'automation', 'infrastructure', 'grid', 'supply chain', 'privacy', 'surveillance', 'digital', 'system', 'network', 'internet', 'platform', 'cognitive', 'dependency'],
+//   'rabbit-hole':         ['bizarre', 'fascinating', 'mysterious', 'deep dive', 'investigation', 'obscure', 'forgotten', 'strange', 'remarkable', 'unexplained', 'viral', 'visual', 'photo', 'infographic', 'data', 'chart'],
+// };
+//
+// function scoreArticle(item, section, sourceName, blurb) {
+//   let score = 0;
+//   const blurbLen = blurb.trim().length;
+//   if      (blurbLen >= 150) score += 3;
+//   else if (blurbLen >= 80)  score += 2;
+//   else if (blurbLen >= 20)  score += 1;
+//   if      (TIER1_SOURCES.has(sourceName)) score += 3;
+//   else if (sourceName)                    score += 2;
+//   else                                    score += 1;
+//   const pubDate = item.pubDate ? new Date(item.pubDate) : null;
+//   if (pubDate && !isNaN(pubDate)) {
+//     const ageHrs = (Date.now() - pubDate.getTime()) / 36e5;
+//     if      (ageHrs < 6)  score += 2;
+//     else if (ageHrs < 24) score += 1;
+//   }
+//   const keywords = SECTION_KEYWORDS[section] || [];
+//   if (keywords.length) {
+//     const text = `${item.title || ''} ${blurb}`.toLowerCase();
+//     const matches = keywords.filter(kw => text.includes(kw)).length;
+//     if      (matches >= 2) score += 2;
+//     else if (matches >= 1) score += 1;
+//   }
+//   return score;
+// }
+// ─────────────────────────────────────────────────────────────────────────────
 
 async function scrapeOgImage(articleUrl) {
   try {
@@ -93,16 +93,27 @@ async function fetchAndStore() {
     process.exit(1);
   }
 
-  // Pre-fetch all existing source_urls once — used to skip duplicates before inserting
+  // Pre-fetch all existing source_urls once — used to skip duplicates
   const { data: existingRows } = await supabase
     .from('articles')
     .select('source_url');
   const existingUrls = new Set((existingRows || []).map(r => r.source_url));
 
-  let totalAttempted = 0;
-  let totalSkipped   = 0;
-  let totalInsertErrors = 0;
-  let feedParseFailures = 0;
+  // Run metrics
+  let totalAttempted     = 0;
+  let totalSkipped       = 0;
+  let totalInsertErrors  = 0;
+  let feedParseFailures  = 0;
+  let apiCallsOk         = 0;
+  let apiCallsFailed     = 0;
+  let statusCounts       = { pipeline: 0, queue: 0, skipped: 0 };
+  let reassignedCount    = 0;
+  let totalInputChars    = 0;
+  let totalOutputChars   = 0;
+
+  // Circuit breaker — if 50+ API failures, stop making API calls
+  const CIRCUIT_BREAKER_LIMIT = 50;
+  let circuitBroken = false;
 
   const BLURB_JUNK = ['Article URL:', 'Comments URL:', 'Points:', '# Comments'];
 
@@ -116,7 +127,8 @@ async function fetchAndStore() {
       continue;
     }
 
-    const articles = (feed.items || []).slice(0, 5)
+    // Filter and extract raw candidates (synchronous — dedup + blurb checks)
+    const candidates = (feed.items || []).slice(0, 5)
       .filter(item => item.title && item.title.length >= 10)
       .filter(item => {
         if (!item.link || existingUrls.has(item.link)) { totalSkipped++; return false; }
@@ -130,31 +142,83 @@ async function fetchAndStore() {
       .filter(({ blurb }) => {
         if (blurb.trim().length < 20) { totalSkipped++; return false; }
         return true;
-      })
-      .map(({ blurb, item }) => {
-        const score = scoreArticle(item, source.section, source.name, blurb);
-        return { blurb, item, score };
-      })
-      .filter(({ score, blurb }) => {
-        if (score === 0 || !blurb) { totalSkipped++; return false; }
-        return true;
-      })
-      .map(({ blurb, item, score }) => ({
-        section: source.section,
-        headline: item.title,
-        blurb,
-        source_name: source.name,
-        source_url: item.link,
-        status: score >= 8 ? 'pipeline' : 'queue',
-        score,
-        published_at: item.pubDate || new Date().toISOString()
-      }));
+      });
 
-    if (!articles.length) continue;
+    const articlesToInsert = [];
 
-    // Scrape og:image for each article (best-effort, null if unavailable)
+    for (const { blurb, item } of candidates) {
+      // Circuit breaker: too many API failures — queue remaining without scoring
+      if (!circuitBroken && apiCallsFailed >= CIRCUIT_BREAKER_LIMIT) {
+        circuitBroken = true;
+        console.warn('[CCO] CIRCUIT BREAKER: 50+ API failures, falling back to queue-all mode');
+      }
+
+      let finalScore, assignedSection, ccoBlurb, ccoReasoning, sectionReassigned;
+
+      if (circuitBroken) {
+        // Fallback: queue everything without API call
+        finalScore        = 5;
+        assignedSection   = source.section;
+        ccoBlurb          = null;
+        ccoReasoning      = 'Circuit breaker active — queued without CCO scoring';
+        sectionReassigned = false;
+      } else {
+        // Track input size for cost estimation
+        const inputStr = `${item.title} ${blurb} ${source.name} ${source.section}`;
+        totalInputChars += inputStr.length;
+
+        const cco = await scoreWithCCO(item.title, blurb, source.name, source.section);
+
+        // Detect fallback response (api failure)
+        if (cco.reasoning?.includes('CCO scoring failed')) {
+          apiCallsFailed++;
+        } else {
+          apiCallsOk++;
+          totalOutputChars += JSON.stringify(cco).length;
+        }
+
+        // Source reputation tiebreaker at exact thresholds 6 and 8
+        let score = cco.score;
+        if (score === 6 || score === 8) {
+          score += TIER1_SOURCES.has(source.name) ? 0.5 : -0.5;
+        }
+
+        finalScore        = score;
+        assignedSection   = cco.assigned_section || source.section;
+        ccoBlurb          = cco.blurb || null;
+        ccoReasoning      = cco.reasoning || null;
+        sectionReassigned = cco.section_reassigned || false;
+      }
+
+      // Status thresholds: 8+ → pipeline, 6–7.9 → queue, <6 → skip
+      const status = finalScore >= 8 ? 'pipeline' : finalScore >= 6 ? 'queue' : null;
+      if (!status) {
+        totalSkipped++;
+        statusCounts.skipped++;
+        continue;
+      }
+
+      if (sectionReassigned) reassignedCount++;
+      statusCounts[status]++;
+
+      articlesToInsert.push({
+        section:        assignedSection,
+        headline:       item.title,
+        blurb:          ccoBlurb || blurb,
+        source_name:    source.name,
+        source_url:     item.link,
+        status,
+        score:          finalScore,
+        score_reasoning: ccoReasoning,
+        published_at:   item.pubDate || new Date().toISOString(),
+      });
+    }
+
+    if (!articlesToInsert.length) continue;
+
+    // Scrape og:image for each article (best-effort)
     const articlesWithImages = await Promise.all(
-      articles.map(async (a) => ({
+      articlesToInsert.map(async (a) => ({
         ...a,
         image_url: await scrapeOgImage(a.source_url),
       }))
@@ -162,19 +226,52 @@ async function fetchAndStore() {
 
     totalAttempted += articlesWithImages.length;
 
-    const { error: insertError } = await supabase
-      .from('articles')
-      .insert(articlesWithImages);
+    if (!DRY_RUN) {
+      const { error: insertError } = await supabase
+        .from('articles')
+        .insert(articlesWithImages);
 
-    if (insertError) {
-      totalInsertErrors += 1;
-      console.error(`[INSERT ERROR] "${source.name}" — ${source.url} — ${insertError.message}`);
+      if (insertError) {
+        totalInsertErrors++;
+        console.error(`[INSERT ERROR] "${source.name}" — ${insertError.message}`);
+      }
+    } else {
+      articlesWithImages.forEach(a =>
+        console.log(`[DRY RUN] Would insert: [${a.status}] ${a.section} — ${a.headline.substring(0, 60)}`)
+      );
     }
   }
 
-  console.log(
-    `RSS fetch complete. Active sources: ${sources?.length || 0}. New articles inserted: ${totalAttempted}. Duplicates skipped: ${totalSkipped}. Feed failures: ${feedParseFailures}. Insert errors: ${totalInsertErrors}.`
-  );
+  // ── Run summary ─────────────────────────────────────────────────────────────
+  const estimatedCost =
+    (totalInputChars  / 4 / 1_000_000) * 0.25 +
+    (totalOutputChars / 4 / 1_000_000) * 1.25;
+
+  console.log(`
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[CCO] RUN SUMMARY${DRY_RUN ? ' (DRY RUN)' : ''}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Active sources:       ${sources?.length || 0}
+Feed parse failures:  ${feedParseFailures}
+Articles processed:   ${totalAttempted}
+Duplicates skipped:   ${totalSkipped}
+
+Status breakdown:
+  → Pipeline (8+):   ${statusCounts.pipeline}
+  → Queue (6–7):     ${statusCounts.queue}
+  → Skipped (<6):    ${statusCounts.skipped}
+
+Section reassignments: ${reassignedCount}
+
+API calls:
+  Successful:        ${apiCallsOk}
+  Failed/fallback:   ${apiCallsFailed}
+  Circuit breaker:   ${circuitBroken ? 'TRIPPED' : 'OK'}
+
+Insert errors:       ${totalInsertErrors}
+Est. API cost:       $${estimatedCost.toFixed(4)}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+`);
 }
 
 fetchAndStore();

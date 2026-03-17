@@ -93,13 +93,10 @@
     }
 
     function articleCard(a) {
-      const statusCls   = a.status === "active" ? "status-active" : "status-archived";
-      const statusLabel = a.status === "active" ? "Active" : "Archived";
       const score       = a.score != null ? Number(a.score).toFixed(1) : null;
       return `
         <div class="feed-card">
           <div class="card-badges">
-            <span class="status-badge ${statusCls}">${statusLabel}</span>
             <span class="feed-tag ${SECTION_TAG_CLS}">${SECTION_LABEL}</span>
             ${score !== null ? `<span class="score-badge">${score}</span>` : ""}
           </div>

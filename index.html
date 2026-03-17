@@ -1022,6 +1022,29 @@
       </div>`;
   }
 
+  function fillTicker(articles) {
+    const ticker = document.getElementById('ticker');
+    if (!ticker || !articles.length) return;
+
+    const top = articles
+      .slice()
+      .sort((a, b) => (b.score || 0) - (a.score || 0))
+      .slice(0, 20);
+
+    if (!top.length) return; // keep static placeholder
+
+    function buildSet() {
+      return top.map(a =>
+        `<span class="ticker-item"><a href="${a.source_url || '#'}" target="_blank" rel="noopener noreferrer" style="color:inherit;text-decoration:none;">${a.headline || ''}</a></span><span class="ticker-sep">◆</span>`
+      ).join('');
+    }
+
+    // Duplicate for seamless CSS loop (animation translates -50%)
+    ticker.innerHTML =
+      `<span class="ticker-label">Live</span>` + buildSet() +
+      `<span class="ticker-label">Live</span>` + buildSet();
+  }
+
   function fillHero(articles) {
     if (!articles.length) return;
     const [lead, ...sides] = articles;
@@ -1067,7 +1090,7 @@
   async function loadArticles() {
     const { data, error } = await sbClient
       .from("articles")
-      .select("headline, blurb, source_name, source_url, published_at, section, status, image_url")
+      .select("headline, blurb, source_name, source_url, published_at, section, status, image_url, score")
       .eq("status", "active")
       .order("published_at", { ascending: false })
       .limit(100);
@@ -1081,7 +1104,22 @@
     const bySection = (keyword, max) =>
       all.filter(a => (a.section || "").toLowerCase().includes(keyword)).slice(0, max);
 
-    fillHero(all.slice(0, 4));
+    // Hero: random pick from top-scored pool (score >= 7.0, up to 10 candidates)
+    const heroPool = all
+      .filter(a => (a.score || 0) >= 7.0)
+      .sort((a, b) => (b.score || 0) - (a.score || 0))
+      .slice(0, 10);
+    if (heroPool.length > 0) {
+      const idx = Math.floor(Math.random() * heroPool.length);
+      const heroArticle = heroPool[idx];
+      const heroSides = heroPool.filter((_, i) => i !== idx).slice(0, 3);
+      fillHero([heroArticle, ...heroSides]);
+    } else {
+      fillHero(all.slice(0, 4));
+    }
+
+    // Ticker: top 20 active articles by score
+    fillTicker(all);
     fillSection("science",         bySection("curious",         6), ".feed-grid-3");
     fillSection("technology",      bySection("tech",            6), ".feed-grid-3");
     fillSection("culture",         bySection("mind-culture",    6), ".feed-grid-3");

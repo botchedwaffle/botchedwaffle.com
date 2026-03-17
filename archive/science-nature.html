@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Science & Nature Archive — BotchedWaffle</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./archive.css" />
+</head>
+<body>
+
+<header class="archive-header">
+  <div class="archive-topbar">
+    <a href="/" class="archive-wordmark">Botched<span>Waffle</span></a>
+    <span class="archive-label">Archive</span>
+  </div>
+  <nav class="section-nav">
+    <a href="./history-origins.html">History &amp; Origins</a>
+    <a href="./psychology-behavior.html">Psychology &amp; Behavior</a>
+    <a href="./science-nature.html" class="active">Science &amp; Nature</a>
+    <a href="./food-culture.html">Food &amp; Culture</a>
+    <a href="./technology-systems.html">Technology &amp; Systems</a>
+    <a href="./rabbit-hole.html">The Rabbit Hole</a>
+  </nav>
+</header>
+
+<main>
+  <div class="section-hero">
+    <h1>Science &amp; Nature</h1>
+    <p>Discoveries, wildlife, and how the natural world actually works</p>
+  </div>
+  <div class="feed-grid-3" id="article-grid">
+    <div class="empty-state">Loading articles…</div>
+  </div>
+</main>
+
+<footer>
+  <div class="footer-brand">
+    <div class="brand-name">Botched<span>Waffle</span></div>
+    <p>A curated digest of the stories that matter. No algorithm. No clickbait. Just good journalism, found and filtered by hand.</p>
+  </div>
+  <div class="footer-col">
+    <h4>Sections</h4>
+    <ul>
+      <li><a href="./history-origins.html">History &amp; Origins</a></li>
+      <li><a href="./psychology-behavior.html">Psychology &amp; Behavior</a></li>
+      <li><a href="./science-nature.html">Science &amp; Nature</a></li>
+      <li><a href="./food-culture.html">Food &amp; Culture</a></li>
+      <li><a href="./technology-systems.html">Technology &amp; Systems</a></li>
+      <li><a href="./rabbit-hole.html">The Rabbit Hole</a></li>
+    </ul>
+  </div>
+  <div class="footer-col">
+    <h4>About</h4>
+    <ul>
+      <li><a href="/">Home</a></li>
+      <li><a href="/">About this site</a></li>
+      <li><a href="/">How we curate</a></li>
+      <li><a href="/">Contact</a></li>
+    </ul>
+  </div>
+</footer>
+<div class="footer-bottom">
+  <p>© 2025 BotchedWaffle.com — Independent curation</p>
+  <p>No tracking · No ads · No nonsense</p>
+</div>
+
+<button class="back-to-top" id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑ Top</button>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+<script>
+  const SECTION_SLUG    = "science-nature";
+  const SECTION_TAG_CLS = "tag-world";
+  const SECTION_LABEL   = "Science & Nature";
+
+  const SUPABASE_URL      = "https://gujyarvouwvibdeklflc.supabase.co";
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd1anlhcnZvdXd2aWJkZWtsZmxjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI3MDkyNDcsImV4cCI6MjA4ODI4NTI0N30.r_NHJfI8XveGzZjXDm-bAbu3xEeSP3Eg5KqFo0y9CCY";
+
+  function initPage() {
+    const sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    function timeAgo(dateStr) {
+      if (!dateStr) return "";
+      const dt   = new Date(dateStr);
+      const mins = Math.floor((Date.now() - dt.getTime()) / 60000);
+      if (mins < 60)  return `${mins}m ago`;
+      const hrs = Math.floor(mins / 60);
+      if (hrs  < 24)  return `${hrs}h ago`;
+      const days = Math.floor(hrs / 24);
+      return `${days} day${days === 1 ? "" : "s"} ago`;
+    }
+
+    function articleCard(a) {
+      const statusCls   = a.status === "active" ? "status-active" : "status-archived";
+      const statusLabel = a.status === "active" ? "Active" : "Archived";
+      const score       = a.score != null ? Number(a.score).toFixed(1) : null;
+      return `
+        <div class="feed-card">
+          <div class="card-badges">
+            <span class="status-badge ${statusCls}">${statusLabel}</span>
+            <span class="feed-tag ${SECTION_TAG_CLS}">${SECTION_LABEL}</span>
+            ${score !== null ? `<span class="score-badge">${score}</span>` : ""}
+          </div>
+          <a href="${a.source_url || "#"}" target="_blank" rel="noopener noreferrer" class="headline-link">
+            <h3 class="card-headline">${a.headline || ""}</h3>
+          </a>
+          ${a.score_reasoning ? `<p class="card-reasoning">${a.score_reasoning}</p>` : ""}
+          ${a.blurb           ? `<p class="card-blurb">${a.blurb}</p>` : ""}
+          <p class="card-meta"><strong>${a.source_name || ""}</strong>${a.published_at ? " · " + timeAgo(a.published_at) : ""}</p>
+        </div>`;
+    }
+
+    async function loadArticles() {
+      const grid = document.getElementById("article-grid");
+      const { data, error } = await sbClient
+        .from("articles")
+        .select("id, headline, blurb, source_url, source_name, section, score, score_reasoning, status, published_at")
+        .eq("section", SECTION_SLUG)
+        .in("status", ["active", "retired"])
+        .order("score", { ascending: false })
+        .limit(100);
+
+      if (error) {
+        console.error('Supabase error:', error);
+        grid.innerHTML = `<div class="empty-state">Error loading articles — check console.</div>`;
+        return;
+      }
+      if (!data || data.length === 0) {
+        console.warn('No articles returned for section:', SECTION_SLUG);
+        grid.innerHTML = `<div class="empty-state">No articles found in this section yet — check back soon.</div>`;
+        return;
+      }
+      console.log('Loaded', data.length, 'articles for', SECTION_SLUG);
+      grid.innerHTML = data.map(articleCard).join("");
+    }
+
+    loadArticles();
+
+    const btn = document.getElementById("backToTop");
+    window.addEventListener("scroll", () => {
+      btn.classList.toggle("visible", window.scrollY > 400);
+    }, { passive: true });
+  }
+
+  if (window.supabase) {
+    initPage();
+  } else {
+    document.querySelector('script[src*="supabase"]').addEventListener('load', initPage);
+  }
+</script>
+</body>
+</html>

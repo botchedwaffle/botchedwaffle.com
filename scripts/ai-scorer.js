@@ -108,4 +108,57 @@ async function scoreWithCCO(headline, blurb, sourceName, defaultSection) {
   return result;
 }
 
-module.exports = { scoreWithCCO };
+const BLURB_SYSTEM_PROMPT = `You are the Chief Content Officer of BotchedWaffle.com. Write a 1-2 sentence context blurb for this article.
+
+The blurb should:
+- Answer "why should I care?"
+- Be curious and punchy — like a well-read friend recommending something
+- Start with the interesting part
+- Be specific, not generic
+- Never use "This article explores..." or "In this piece..."
+
+Return ONLY the blurb text. No quotes, no formatting, no explanation.`;
+
+/**
+ * Generate a BotchedWaffle-voice blurb for an article being promoted to active.
+ * @param {string} headline
+ * @param {string} originalBlurb  — RSS blurb, used as fallback on error
+ * @param {string} section
+ * @returns {Promise<string>} Generated blurb, or originalBlurb on failure
+ */
+async function generateBlurb(headline, originalBlurb, section) {
+  await sleep(RATE_LIMIT_MS);
+
+  const userMessage = `Section: ${section}\nHeadline: ${headline}\nOriginal description: ${originalBlurb || ''}`;
+
+  try {
+    const res = await fetch(ANTHROPIC_API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type':      'application/json',
+        'x-api-key':         process.env.ANTHROPIC_API_KEY,
+        'anthropic-version': '2023-06-01',
+      },
+      body: JSON.stringify({
+        model:      MODEL,
+        max_tokens: 150,
+        system:     BLURB_SYSTEM_PROMPT,
+        messages:   [{ role: 'user', content: userMessage }],
+      }),
+    });
+
+    if (!res.ok) {
+      console.warn(`[CCO] Blurb generation failed (${res.status}) for: ${headline.substring(0, 50)}`);
+      return originalBlurb;
+    }
+
+    const body  = await res.json();
+    const blurb = body?.content?.[0]?.text?.trim() || '';
+    return blurb || originalBlurb;
+  } catch (err) {
+    console.warn(`[CCO] Blurb generation error: ${err.message}`);
+    return originalBlurb;
+  }
+}
+
+module.exports = { scoreWithCCO, generateBlurb };

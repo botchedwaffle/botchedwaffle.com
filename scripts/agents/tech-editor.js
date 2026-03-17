@@ -26,7 +26,7 @@ async function runTechEditor() {
     .from('articles')
     .select('id, headline, blurb, source_name')
     .eq('section', 'technology-systems')
-    .in('status', ['pipeline', 'queue'])
+    .eq('status', 'pending')
     .eq('scored_by', 'rule-based')
     .limit(20);
 

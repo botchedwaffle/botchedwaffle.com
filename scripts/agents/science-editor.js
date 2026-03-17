@@ -26,7 +26,7 @@ async function runScienceEditor() {
     .from('articles')
     .select('id, headline, blurb, source_name')
     .eq('section', 'history-origins')
-    .in('status', ['pipeline', 'queue'])
+    .eq('status', 'pending')
     .eq('scored_by', 'rule-based')
     .limit(20);
 

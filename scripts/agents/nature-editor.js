@@ -26,7 +26,7 @@ async function runNatureEditor() {
     .from('articles')
     .select('id, headline, blurb, source_name')
     .eq('section', 'science-nature')
-    .in('status', ['pipeline', 'queue'])
+    .eq('status', 'pending')
     .eq('scored_by', 'rule-based')
     .limit(20);
 

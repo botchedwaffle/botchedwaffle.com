@@ -1045,9 +1045,9 @@
   async function loadArticles() {
     const { data, error } = await sbClient
       .from("articles")
-      .select("headline, blurb, source_name, source_url, published_at, section, status, image_url, score")
+      .select("headline, blurb, source_name, source_url, published_at, promoted_at, section, status, image_url, score")
       .eq("status", "active")
-      .order("published_at", { ascending: false })
+      .order("promoted_at", { ascending: false, nullsFirst: false })
       .limit(100);
 
     if (error) {
@@ -1075,12 +1075,12 @@
 
     // Ticker: top 20 active articles by score
     fillTicker(all);
-    fillSection("history-origins",     bySection("history-origins",     6), ".feed-grid-3");
-    fillSection("psychology-behavior", bySection("psychology-behavior", 6), ".feed-grid-3");
-    fillSection("science-nature",      bySection("science-nature",      6), ".feed-grid-3");
-    fillSection("food-culture",        bySection("food-culture",        6), ".feed-grid-3");
-    fillSection("technology-systems",  bySection("technology-systems",  6), ".feed-grid-3");
-    fillSection("rabbit-hole",         bySection("rabbit-hole",         6), ".feed-grid-3");
+    fillSection("history-origins",     bySection("history-origins",     4), ".feed-grid-3");
+    fillSection("psychology-behavior", bySection("psychology-behavior", 4), ".feed-grid-3");
+    fillSection("science-nature",      bySection("science-nature",      4), ".feed-grid-3");
+    fillSection("food-culture",        bySection("food-culture",        4), ".feed-grid-3");
+    fillSection("technology-systems",  bySection("technology-systems",  4), ".feed-grid-3");
+    fillSection("rabbit-hole",         bySection("rabbit-hole",         4), ".feed-grid-3");
   }
   
   loadArticles();

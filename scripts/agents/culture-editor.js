@@ -26,7 +26,7 @@ async function runCultureEditor() {
     .from('articles')
     .select('id, headline, blurb, source_name')
     .eq('section', 'psychology-behavior')
-    .in('status', ['pipeline', 'queue'])
+    .eq('status', 'pending')
     .eq('scored_by', 'rule-based')
     .limit(20);
 

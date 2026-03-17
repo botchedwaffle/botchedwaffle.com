@@ -11,7 +11,7 @@ const supabase = createClient(
 const DRY_RUN = process.env.DRY_RUN === 'true';
 if (DRY_RUN) console.log('[CCO] DRY RUN MODE — no database writes');
 
-// Source reputation — used as tiebreaker when CCO score lands exactly on a threshold
+// Source reputation — tier 1 = premium sources, used in rank_score calculation
 const TIER1_SOURCES = new Set([
   'BBC News', 'Reuters', 'AP News', 'The Guardian', 'NPR',
   'Ars Technica', 'Wired', 'The Verge', 'MIT Technology Review',
@@ -20,6 +20,17 @@ const TIER1_SOURCES = new Set([
   'The Atlantic', 'New York Times', 'Washington Post',
   'Financial Times', 'Bloomberg', 'The Economist',
 ]);
+
+// Recency bonus for rank_score: fresher articles rank higher
+function recencyBonus(pubDateStr) {
+  if (!pubDateStr) return 0;
+  const pubDate = new Date(pubDateStr);
+  if (isNaN(pubDate)) return 0;
+  const ageHrs = (Date.now() - pubDate.getTime()) / 36e5;
+  if (ageHrs < 6)  return 2;
+  if (ageHrs < 24) return 1;
+  return 0;
+}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // LEGACY: Rule-based scoring — kept as fallback reference
@@ -106,7 +117,7 @@ async function fetchAndStore() {
   let feedParseFailures  = 0;
   let apiCallsOk         = 0;
   let apiCallsFailed     = 0;
-  let statusCounts       = { pipeline: 0, queue: 0, skipped: 0 };
+  let statusCounts       = { pending: 0, rejected: 0 };
   let reassignedCount    = 0;
   let totalInputChars    = 0;
   let totalOutputChars   = 0;
@@ -156,11 +167,11 @@ async function fetchAndStore() {
       let finalScore, assignedSection, ccoBlurb, ccoReasoning, sectionReassigned;
 
       if (circuitBroken) {
-        // Fallback: queue everything without API call
-        finalScore        = 5;
+        // Fallback: pending with minimum qualifying score (manual review expected)
+        finalScore        = 6.0;
         assignedSection   = source.section;
         ccoBlurb          = null;
-        ccoReasoning      = 'Circuit breaker active — queued without CCO scoring';
+        ccoReasoning      = 'Circuit breaker active — queued for manual review';
         sectionReassigned = false;
       } else {
         // Track input size for cost estimation
@@ -190,53 +201,65 @@ async function fetchAndStore() {
         sectionReassigned = cco.section_reassigned || false;
       }
 
-      // Status thresholds: 8+ → pipeline, 6–7.9 → queue, <6 → skip
-      const status = finalScore >= 8 ? 'pipeline' : finalScore >= 6 ? 'queue' : null;
-      if (!status) {
-        totalSkipped++;
-        statusCounts.skipped++;
-        continue;
+      // Status: 6+ → pending (promoted later by publish-cycle), <6 → rejected (tracked for dedup)
+      const isPending = finalScore >= 6;
+      const status    = isPending ? 'pending' : 'rejected';
+
+      if (isPending) {
+        if (sectionReassigned) reassignedCount++;
+        statusCounts.pending++;
+      } else {
+        statusCounts.rejected++;
+        console.log(`[CCO] REJECT: ${item.title.substring(0, 50)} (${finalScore}/10)`);
       }
 
-      if (sectionReassigned) reassignedCount++;
-      statusCounts[status]++;
+      // Composite rank score — orders pending articles for promotion
+      const tier      = TIER1_SOURCES.has(source.name) ? 2 : 1;
+      const bonus     = recencyBonus(item.pubDate);
+      const rankScore = isPending ? (finalScore * 10) + (tier * 2) + bonus : 0;
 
       articlesToInsert.push({
-        section:        assignedSection,
-        headline:       item.title,
-        blurb:          ccoBlurb || blurb,
-        source_name:    source.name,
-        source_url:     item.link,
+        section:         assignedSection,
+        headline:        item.title,
+        blurb:           isPending ? blurb : null,  // CCO blurb generated at promotion time
+        source_name:     source.name,
+        source_url:      item.link,
         status,
-        score:          finalScore,
+        source_type:     'rss',
+        score:           finalScore,
+        rank_score:      rankScore,
         score_reasoning: ccoReasoning,
-        published_at:   item.pubDate || new Date().toISOString(),
+        published_at:    item.pubDate || new Date().toISOString(),
       });
     }
 
     if (!articlesToInsert.length) continue;
 
-    // Scrape og:image for each article (best-effort)
-    const articlesWithImages = await Promise.all(
-      articlesToInsert.map(async (a) => ({
+    // Scrape og:image only for pending articles (rejected won't appear on frontend)
+    const pendingArticles  = articlesToInsert.filter(a => a.status === 'pending');
+    const rejectedArticles = articlesToInsert.filter(a => a.status === 'rejected');
+
+    const pendingWithImages = await Promise.all(
+      pendingArticles.map(async (a) => ({
         ...a,
         image_url: await scrapeOgImage(a.source_url),
       }))
     );
 
-    totalAttempted += articlesWithImages.length;
+    const allToInsert = [...pendingWithImages, ...rejectedArticles];
+    totalAttempted += allToInsert.length;
 
     if (!DRY_RUN) {
       const { error: insertError } = await supabase
         .from('articles')
-        .insert(articlesWithImages);
+        .insert(allToInsert);
 
       if (insertError) {
         totalInsertErrors++;
         console.error(`[INSERT ERROR] "${source.name}" — ${insertError.message}`);
       }
     } else {
-      articlesWithImages.forEach(a =>
+      allToInsert.forEach(a =>
         console.log(`[DRY RUN] Would insert: [${a.status}] ${a.section} — ${a.headline.substring(0, 60)}`)
       );
     }
@@ -257,9 +280,8 @@ Articles processed:   ${totalAttempted}
 Duplicates skipped:   ${totalSkipped}
 
 Status breakdown:
-  → Pipeline (8+):   ${statusCounts.pipeline}
-  → Queue (6–7):     ${statusCounts.queue}
-  → Skipped (<6):    ${statusCounts.skipped}
+  → Pending (6+):    ${statusCounts.pending}
+  → Rejected (<6):   ${statusCounts.rejected}
 
 Section reassignments: ${reassignedCount}
 

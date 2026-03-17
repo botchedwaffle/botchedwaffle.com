@@ -140,7 +140,7 @@
 
     .ticker-inner {
       display: inline-flex;
-      animation: scroll-ticker 35s linear infinite;
+      animation: scroll-ticker 160s linear infinite;
     }
 
     .ticker-inner:hover { animation-play-state: paused; }
@@ -511,6 +511,8 @@
       aspect-ratio: 16/9;
       background-size: cover;
       background-position: center;
+      object-fit: cover;
+      display: block;
       border-radius: 4px;
       margin-bottom: 1rem;
     }
@@ -1053,7 +1055,7 @@
     if (heroMain && lead) {
       const meta = SECTION_META[lead.section] || {};
       heroMain.innerHTML = `
-        ${lead.image_url ? `<div class="hero-image" style="background-image:url('${lead.image_url}')"></div>` : ''}
+        ${lead.image_url ? `<img class="hero-image" src="${lead.image_url}" alt="${(lead.headline || '').replace(/"/g, '&quot;')}" onerror="this.style.display='none'" />` : ''}
         <span class="feed-tag ${meta.cls || 'tag-world'}">${tagLabel(lead.section)}</span>
         <a href="${lead.source_url || '#'}" target="_blank" rel="noopener noreferrer" class="headline-link">
           <h2 class="card-headline">${lead.headline || ''}</h2>

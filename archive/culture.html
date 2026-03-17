@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Culture Archive — BotchedWaffle | Mar 2026</title>
+  <title>Psychology &amp; Behavior Archive — BotchedWaffle | Mar 2026</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -18,21 +18,18 @@
     <span class="archive-label">Archive</span>
   </div>
   <nav class="section-nav">
-    <a href="./science.html">Science</a>
-    <a href="./technology.html">Technology</a>
-    <a href="./culture.html"       class="active">Culture</a>
-    <a href="./human-mind.html">Human Mind</a>
-    <a href="./good-news.html">Good News</a>
-    <a href="./nature.html">Nature</a>
-    <a href="./origin-story.html">Origin Story</a>
-    <a href="./food-drink.html">Food &amp; Drink</a>
+    <a href="./science.html">History &amp; Origins</a>
+    <a href="./culture.html"       class="active">Psychology &amp; Behavior</a>
+    <a href="./nature.html">Science &amp; Nature</a>
+    <a href="./food-drink.html">Food &amp; Culture</a>
+    <a href="./technology.html">Technology &amp; Systems</a>
   </nav>
 </header>
 
 <main>
   <div class="section-hero">
-    <h1>Culture</h1>
-    <p>Arts, society, and the human experience</p>
+    <h1>Psychology &amp; Behavior</h1>
+    <p>How humans think, feel, decide, and relate to each other</p>
   </div>
   <div class="feed-grid-3" id="article-grid">
     <div class="empty-state">Loading articles…</div>
@@ -47,14 +44,11 @@
   <div class="footer-col">
     <h4>Sections</h4>
     <ul>
-      <li><a href="./science.html">Science</a></li>
-      <li><a href="./technology.html">Technology</a></li>
-      <li><a href="./culture.html">Culture</a></li>
-      <li><a href="./human-mind.html">Human Mind</a></li>
-      <li><a href="./good-news.html">Good News</a></li>
-      <li><a href="./nature.html">Nature</a></li>
-      <li><a href="./origin-story.html">Origin Story</a></li>
-      <li><a href="./food-drink.html">Food &amp; Drink</a></li>
+      <li><a href="./science.html">History &amp; Origins</a></li>
+      <li><a href="./culture.html">Psychology &amp; Behavior</a></li>
+      <li><a href="./nature.html">Science &amp; Nature</a></li>
+      <li><a href="./food-drink.html">Food &amp; Culture</a></li>
+      <li><a href="./technology.html">Technology &amp; Systems</a></li>
     </ul>
   </div>
   <div class="footer-col">
@@ -76,9 +70,9 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 <script>
-  const SECTION_SLUG    = "mind-culture";
-  const SECTION_TAG_CLS = "tag-culture";
-  const SECTION_LABEL   = "Culture";
+  const SECTION_SLUG    = "psychology-behavior";
+  const SECTION_TAG_CLS = "tag-science";
+  const SECTION_LABEL   = "Psychology & Behavior";
 
   const SUPABASE_URL      = "https://gujyarvouwvibdeklflc.supabase.co";
   const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd1anlhcnZvdXd2aWJkZWtsZmxjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI3MDkyNDcsImV4cCI6MjA4ODI4NTI0N30.r_NHJfI8XveGzZjXDm-bAbu3xEeSP3Eg5KqFo0y9CCY";

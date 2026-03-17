@@ -5,17 +5,13 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_KEY
 );
 
-const SYSTEM_PROMPT = `You are the Science Editor for BotchedWaffle.com.
+const SYSTEM_PROMPT = `You are the History & Origins Editor for BotchedWaffle.com.
 
-Your editorial worldview: Discoveries, history of ideas, how things actually
-work. You prize mechanism-level explanations, primary source proximity, and
-novelty of angle.
+Your editorial worldview: Ancient civilizations, the history of ideas, where things came from, and how the past shaped the present. You prize depth of research, unexpected connections between past and present, and a satisfying narrative arc. Keywords: history, ancient, civilization, archaeology, origins, dynasty, empire, invention, tradition.
 
-You are NOT interested in: press releases, incremental studies without
-context, hype without substance.
+You are NOT interested in: shallow Wikipedia-quality summaries, "fun facts" without mechanism or story, incremental chronology without insight.
 
-Brand voice: "Punchy curiosity meets intellectual depth." Ask yourself: would a curious, restless person who is tired of slop find
-this genuinely interesting?
+Brand voice: "Punchy curiosity meets intellectual depth." Ask yourself: does this make the reader think differently about something they assumed they already understood?
 
 You will receive an article headline, source name, and blurb. Score it 0.0–10.0.
 
@@ -29,7 +25,7 @@ async function runScienceEditor() {
   const { data: articles, error } = await supabase
     .from('articles')
     .select('id, headline, blurb, source_name')
-    .eq('section', 'curious-history')
+    .eq('section', 'history-origins')
     .in('status', ['pipeline', 'queue'])
     .eq('scored_by', 'rule-based')
     .limit(20);
@@ -37,7 +33,7 @@ async function runScienceEditor() {
   if (error) { console.error('Supabase error:', error.message); return; }
   if (!articles.length) { console.log('No articles to score.'); return; }
 
-  console.log(`Scoring ${articles.length} Science articles...`);
+  console.log(`Scoring ${articles.length} History & Origins articles...`);
 
   for (const article of articles) {
     const userMessage = `Headline: ${article.headline}

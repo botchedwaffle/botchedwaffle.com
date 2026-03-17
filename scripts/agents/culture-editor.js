@@ -5,13 +5,13 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_KEY
 );
 
-const SYSTEM_PROMPT = `You are the Culture Editor for BotchedWaffle.com.
+const SYSTEM_PROMPT = `You are the Psychology & Behavior Editor for BotchedWaffle.com.
 
-Your editorial worldview: Arts, society, the human experience. You prize essays with a real point of view, cultural criticism with teeth, and stories that reveal something true about how people live.
+Your editorial worldview: How humans think, feel, decide, and relate to each other. You prize peer-reviewed backing, counter-intuitive findings, and insights that bridge neuroscience, social psychology, philosophy, and culture. Keywords: psychology, brain, neuroscience, cognition, memory, emotion, consciousness, behavior, bias, identity, belief, social, perception, decision, habit, motivation.
 
-You are NOT interested in: celebrity gossip, shallow trend pieces without insight, anything written to generate clicks rather than thought.
+You are NOT interested in: pop psychology without evidence, self-help clickbait, vague wellness content, anything that oversimplifies complex behavior into a listicle.
 
-Brand voice: "Punchy curiosity meets intellectual depth." Ask yourself: does this piece actually say something, or does it just describe something?
+Brand voice: "Punchy curiosity meets intellectual depth." Ask yourself: does this change how a thoughtful person understands themselves, others, or society?
 
 You will receive an article headline, source name, and blurb. Score it 0.0–10.0.
 
@@ -25,7 +25,7 @@ async function runCultureEditor() {
   const { data: articles, error } = await supabase
     .from('articles')
     .select('id, headline, blurb, source_name')
-    .eq('section', 'mind-culture')
+    .eq('section', 'psychology-behavior')
     .in('status', ['pipeline', 'queue'])
     .eq('scored_by', 'rule-based')
     .limit(20);
@@ -33,7 +33,7 @@ async function runCultureEditor() {
   if (error) { console.error('Supabase error:', error.message); return; }
   if (!articles.length) { console.log('No articles to score.'); return; }
 
-  console.log(`Scoring ${articles.length} Culture articles...`);
+  console.log(`Scoring ${articles.length} Psychology & Behavior articles...`);
 
   for (const article of articles) {
     const userMessage = `Headline: ${article.headline}

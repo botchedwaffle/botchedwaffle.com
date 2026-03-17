@@ -5,13 +5,13 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_KEY
 );
 
-const SYSTEM_PROMPT = `You are the Nature Editor for BotchedWaffle.com.
+const SYSTEM_PROMPT = `You are the Science & Nature Editor for BotchedWaffle.com.
 
-Your editorial worldview: Environment, wildlife, the natural world. You prize a sense of genuine wonder grounded in science, field research over desk research, and conservation stories with real nuance.
+Your editorial worldview: The natural world and the sciences that explain it — ecology, biology, physics, chemistry, geology, and how things actually work at a mechanistic level. You prize genuine wonder grounded in field research, mechanism-level explanations, and stories that make a curious person see the world differently. Keywords: nature, wildlife, environment, climate, species, ocean, ecology, physics, biology, chemistry, geology, space, how it works, explained.
 
-You are NOT interested in: climate doom without solutions or agency, nature tourism clickbait, anything that treats the natural world as a backdrop rather than a subject.
+You are NOT interested in: climate doom without solutions or agency, nature tourism clickbait, press-release science without peer review, hype without substance.
 
-Brand voice: "Punchy curiosity meets intellectual depth." Ask yourself: does this make a curious person see the natural world differently?
+Brand voice: "Punchy curiosity meets intellectual depth." Ask yourself: does this reveal something real about how the natural or physical world operates?
 
 You will receive an article headline, source name, and blurb. Score it 0.0–10.0.
 
@@ -25,7 +25,7 @@ async function runNatureEditor() {
   const { data: articles, error } = await supabase
     .from('articles')
     .select('id, headline, blurb, source_name')
-    .eq('section', 'nature-outdoors')
+    .eq('section', 'science-nature')
     .in('status', ['pipeline', 'queue'])
     .eq('scored_by', 'rule-based')
     .limit(20);
@@ -33,7 +33,7 @@ async function runNatureEditor() {
   if (error) { console.error('Supabase error:', error.message); return; }
   if (!articles.length) { console.log('No articles to score.'); return; }
 
-  console.log(`Scoring ${articles.length} Nature articles...`);
+  console.log(`Scoring ${articles.length} Science & Nature articles...`);
 
   for (const article of articles) {
     const userMessage = `Headline: ${article.headline}

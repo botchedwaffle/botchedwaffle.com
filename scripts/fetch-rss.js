@@ -17,18 +17,12 @@ const TIER1_SOURCES = new Set([
 ]);
 
 const SECTION_KEYWORDS = {
-  'tech':            ['software', 'ai', 'data', 'cloud', 'developer', 'programming', 'tech', 'algorithm', 'cybersecurity', 'startup', 'hardware', 'code', 'internet', 'digital'],
-  'tech-ai':         ['software', 'ai', 'data', 'cloud', 'developer', 'programming', 'tech', 'algorithm', 'cybersecurity', 'startup', 'hardware', 'code', 'internet', 'digital'],
-  'curious':         ['history', 'discovery', 'ancient', 'mystery', 'science', 'research', 'study', 'found', 'origins', 'culture'],
-  'curious-history': ['history', 'discovery', 'ancient', 'mystery', 'science', 'research', 'study', 'found', 'origins', 'culture'],
-  'mind':            ['psychology', 'brain', 'mental', 'cognitive', 'behavior', 'emotion', 'therapy', 'stress', 'anxiety', 'habit'],
-  'human-mind':      ['psychology', 'brain', 'mental', 'cognitive', 'behavior', 'emotion', 'therapy', 'stress', 'anxiety', 'habit'],
-  'food':            ['food', 'recipe', 'cooking', 'restaurant', 'diet', 'nutrition', 'meal', 'flavor', 'ingredient', 'cuisine'],
-  'food-drink':      ['food', 'recipe', 'cooking', 'restaurant', 'diet', 'nutrition', 'meal', 'flavor', 'ingredient', 'cuisine'],
-  'good':            ['rescue', 'donation', 'volunteer', 'charity', 'community', 'breakthrough', 'hope', 'positive', 'success', 'achievement'],
-  'good-news':       ['rescue', 'donation', 'volunteer', 'charity', 'community', 'breakthrough', 'hope', 'positive', 'success', 'achievement'],
-  'nature-outdoors': ['nature', 'wildlife', 'environment', 'climate', 'ocean', 'forest', 'animal', 'conservation', 'outdoor', 'ecosystem'],
-  'origin-story':    ['origin', 'history', 'founding', 'creation', 'invented', 'first', 'story', 'began', 'started', 'developed'],
+  'history-origins':     ['history', 'ancient', 'civilization', 'archaeology', 'origins', 'historical', 'century', 'dynasty', 'empire', 'medieval', 'origin', 'invention', 'how', 'why', 'created', 'founded', 'first', 'discovered', 'began', 'tradition', 'custom', 'ritual'],
+  'psychology-behavior': ['psychology', 'brain', 'neuroscience', 'cognition', 'memory', 'emotion', 'consciousness', 'mental', 'behavior', 'bias', 'identity', 'belief', 'social', 'philosophy', 'culture', 'society', 'perception', 'decision', 'habit', 'anxiety', 'attention', 'motivation'],
+  'science-nature':      ['nature', 'wildlife', 'environment', 'climate', 'species', 'ocean', 'forest', 'animal', 'plant', 'ecology', 'science', 'physics', 'engineering', 'biology', 'chemistry', 'geology', 'weather', 'space', 'how', 'works', 'explained', 'mechanism'],
+  'food-culture':        ['food', 'recipe', 'cuisine', 'ingredient', 'cooking', 'flavor', 'origin', 'dish', 'agricultural', 'spice', 'ferment', 'bread', 'culture', 'tradition', 'culinary', 'harvest', 'drink', 'meal', 'kitchen', 'history'],
+  'technology-systems':  ['ai', 'artificial intelligence', 'machine learning', 'robot', 'algorithm', 'software', 'tech', 'model', 'data', 'automation', 'infrastructure', 'grid', 'supply chain', 'privacy', 'surveillance', 'digital', 'system', 'network', 'internet', 'platform', 'cognitive', 'dependency'],
+  'rabbit-hole':         ['bizarre', 'fascinating', 'mysterious', 'deep dive', 'investigation', 'obscure', 'forgotten', 'strange', 'remarkable', 'unexplained', 'viral', 'visual', 'photo', 'infographic', 'data', 'chart'],
 };
 
 function scoreArticle(item, section, sourceName, blurb) {
@@ -84,8 +78,8 @@ async function fetchAndStore() {
   const parser = new Parser();
 
   const VALID_SECTIONS = [
-    'tech-ai', 'curious-history', 'mind-culture', 'food-drink',
-    'good-news', 'nature-outdoors', 'origin-story', 'human-mind',
+    'history-origins', 'psychology-behavior', 'science-nature',
+    'food-culture', 'technology-systems', 'rabbit-hole',
   ];
 
   const { data: sources, error: sourcesError } = await supabase

@@ -5,13 +5,13 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_KEY
 );
 
-const SYSTEM_PROMPT = `You are the Technology Editor for BotchedWaffle.com.
+const SYSTEM_PROMPT = `You are the Technology & Systems Editor for BotchedWaffle.com.
 
-Your editorial worldview: AI, tools, digital culture, the future of work. You prize contrarian takes, real-world implications over hype, and non-obvious angles that a tech-literate but skeptical reader would find genuinely surprising.
+Your editorial worldview: AI, automation, infrastructure, digital society, and the systems that shape how we live. You prize contrarian takes, real-world implications over hype, and non-obvious angles about how technology embeds itself in everyday life. Keywords: ai, machine learning, algorithm, software, automation, infrastructure, grid, supply chain, privacy, surveillance, digital, platform, network.
 
 You are NOT interested in: product launch announcements without analysis, pure speculation, anything that reads like a press release, incremental version updates.
 
-Brand voice: "Punchy curiosity meets intellectual depth." Ask yourself: would a curious, restless person who is tired of tech slop find this genuinely insightful?
+Brand voice: "Punchy curiosity meets intellectual depth." Ask yourself: does this reveal something true about how technology is reshaping power, behavior, or society?
 
 You will receive an article headline, source name, and blurb. Score it 0.0–10.0.
 
@@ -25,7 +25,7 @@ async function runTechEditor() {
   const { data: articles, error } = await supabase
     .from('articles')
     .select('id, headline, blurb, source_name')
-    .eq('section', 'tech-ai')
+    .eq('section', 'technology-systems')
     .in('status', ['pipeline', 'queue'])
     .eq('scored_by', 'rule-based')
     .limit(20);
@@ -33,7 +33,7 @@ async function runTechEditor() {
   if (error) { console.error('Supabase error:', error.message); return; }
   if (!articles.length) { console.log('No articles to score.'); return; }
 
-  console.log(`Scoring ${articles.length} Technology articles...`);
+  console.log(`Scoring ${articles.length} Technology & Systems articles...`);
 
   for (const article of articles) {
     const userMessage = `Headline: ${article.headline}

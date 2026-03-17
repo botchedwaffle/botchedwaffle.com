@@ -5,13 +5,13 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_KEY
 );
 
-const SYSTEM_PROMPT = `You are the Food & Drink Editor for BotchedWaffle.com.
+const SYSTEM_PROMPT = `You are the Food & Culture Editor for BotchedWaffle.com.
 
-Your editorial worldview: The culture, history, and craft of what we eat and drink. You prize cultural context, the intersection of technique and story, and non-obvious subjects that reveal something larger about human civilization.
+Your editorial worldview: The culture, history, and craft of what we eat and drink. You prize cultural context, culinary history, the intersection of technique and story, and non-obvious subjects that reveal something larger about human civilization. Keywords: food, cuisine, ingredient, cooking, flavor, culinary, spice, ferment, tradition, harvest, drink, meal, agricultural, history.
 
 You are NOT interested in: top 10 lists, generic recipes without narrative, food tourism fluff, anything that treats food as lifestyle accessory rather than cultural artifact.
 
-Brand voice: "Punchy curiosity meets intellectual depth." Ask yourself: does this make food feel like a lens into something bigger?
+Brand voice: "Punchy curiosity meets intellectual depth." Ask yourself: does this make food feel like a lens into something bigger about culture, history, or humanity?
 
 You will receive an article headline, source name, and blurb. Score it 0.0–10.0.
 
@@ -25,7 +25,7 @@ async function runFoodEditor() {
   const { data: articles, error } = await supabase
     .from('articles')
     .select('id, headline, blurb, source_name')
-    .eq('section', 'food-drink')
+    .eq('section', 'food-culture')
     .in('status', ['pipeline', 'queue'])
     .eq('scored_by', 'rule-based')
     .limit(20);
@@ -33,7 +33,7 @@ async function runFoodEditor() {
   if (error) { console.error('Supabase error:', error.message); return; }
   if (!articles.length) { console.log('No articles to score.'); return; }
 
-  console.log(`Scoring ${articles.length} Food & Drink articles...`);
+  console.log(`Scoring ${articles.length} Food & Culture articles...`);
 
   for (const article of articles) {
     const userMessage = `Headline: ${article.headline}

@@ -118,7 +118,7 @@ async function runPublishCycle() {
   // ── Step 2: Count active per section ───────────────────────────────────────
   const { data: activeArticles, error: activeErr } = await supabase
     .from('articles')
-    .select('id, headline, section, rank_score')
+    .select('id, headline, section, rank_score, source_name')
     .eq('status', 'active');
 
   if (activeErr) {
@@ -138,20 +138,67 @@ async function runPublishCycle() {
     const openSlots     = articles_per_section - currentActive;
     if (openSlots <= 0) continue;
 
-    const { data: candidates, error: candErr } = await supabase
+    // Fetch a larger pool so source-diversity filtering has room to manoeuvre
+    const CANDIDATE_POOL = Math.max(openSlots * 5, 20);
+
+    const { data: rawCandidates, error: candErr } = await supabase
       .from('articles')
-      .select('id, headline, blurb, section, rank_score')
+      .select('id, headline, blurb, section, rank_score, source_name')
       .eq('status', 'pending')
       .eq('section', section)
       .order('rank_score', { ascending: false })
-      .limit(openSlots);
+      .limit(CANDIDATE_POOL);
 
     if (candErr) {
       console.error(`[PUBLISH] Error fetching pending for ${section}:`, candErr.message);
       continue;
     }
 
-    for (const article of candidates || []) {
+    // ── PLACE 1: Source diversity filter ──────────────────────────────────────
+    // Sources already holding an active slot in this section
+    const activeSources = new Set(
+      activeBySection[section].map(a => a.source_name).filter(Boolean)
+    );
+
+    // Walk ranked candidates top-to-bottom; skip sources already represented
+    const diverseCandidates = [];
+    const selectedSources   = new Set();
+
+    for (const candidate of rawCandidates || []) {
+      if (diverseCandidates.length >= openSlots) break;
+      const src = candidate.source_name;
+      if (!activeSources.has(src) && !selectedSources.has(src)) {
+        diverseCandidates.push(candidate);
+        selectedSources.add(src);
+      }
+    }
+
+    // Backfill: if diversity filter left open slots short, allow duplicate sources
+    // rather than leaving the homepage empty (best article still wins)
+    if (diverseCandidates.length < openSlots) {
+      for (const candidate of rawCandidates || []) {
+        if (diverseCandidates.length >= openSlots) break;
+        if (!diverseCandidates.some(a => a.id === candidate.id)) {
+          console.log(`[PUBLISH] SOURCE DUP (backfill): "${candidate.source_name}" gets a second slot in ${section}`);
+          diverseCandidates.push(candidate);
+        }
+      }
+    }
+    // ── End Place 1 ───────────────────────────────────────────────────────────
+
+    for (const article of diverseCandidates) {
+      // ── PLACE 2: Pre-activation source check ──────────────────────────────
+      // activeBySection is updated in-loop, so this also catches sources we
+      // just promoted in the same cycle (handles mid-loop duplicates).
+      const sourceConflict = activeBySection[section].some(
+        a => a.source_name && a.source_name === article.source_name
+      );
+      if (sourceConflict) {
+        console.log(`[PUBLISH] HOLD: ${article.headline.substring(0, 50)} — source "${article.source_name}" already active in ${section}`);
+        continue;
+      }
+      // ── End Place 2 ───────────────────────────────────────────────────────
+
       const now         = new Date().toISOString();
       const lifespanHrs = section_config[section]?.lifespan_hours || 48;
       const expiresAt   = new Date(Date.now() + lifespanHrs * 3600000).toISOString();
@@ -191,7 +238,7 @@ async function runPublishCycle() {
       console.log(`[PUBLISH] PROMOTE: ${article.headline.substring(0, 50)} → ${section} (rank: ${article.rank_score})`);
       promotedCount++;
 
-      // Track in memory for over-capacity check
+      // Track in memory — used by Place 2 checks for subsequent articles in this loop
       activeBySection[section].push(article);
     }
   }

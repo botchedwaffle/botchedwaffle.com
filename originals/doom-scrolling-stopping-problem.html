@@ -165,6 +165,53 @@
     }
     .cta-btn:hover { opacity: 0.82; }
 
+    /* ─── SHARE BAR ─── */
+    .share-bar {
+      margin-top: 2.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .share-label {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .share-buttons {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .share-btn {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--ink);
+      background: transparent;
+      border: 1px solid var(--rule);
+      padding: 0.4rem 0.85rem;
+      border-radius: 2px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: color 0.15s, border-color 0.15s;
+      line-height: 1.5;
+    }
+
+    .share-btn:hover {
+      color: var(--rust);
+      border-color: var(--rust);
+    }
+
     /* ─── RESPONSIVE ─── */
     @media (max-width: 600px) {
       .article-container { padding: 1.5rem 1rem 3rem; }
@@ -260,6 +307,18 @@
 
   </div><!-- /.article-body -->
 
+  <!-- Share Bar -->
+  <div class="share-bar">
+    <span class="share-label">Share this article</span>
+    <div class="share-buttons">
+      <button class="share-btn" id="copyLinkBtn">Copy Link</button>
+      <a class="share-btn" href="mailto:?subject=The%20Feed%20Isn%E2%80%99t%20Addictive.%20It%E2%80%99s%20Unfinishable.&body=Thought%20you%27d%20find%20this%20interesting%3A%20https%3A%2F%2Fbotchedwaffle.com%2Foriginals%2Fdoom-scrolling-stopping-problem.html">Email</a>
+      <a class="share-btn" href="https://twitter.com/intent/tweet?text=Doom-scrolling%20is%20not%20hard%20to%20stop%20because%20it%20feels%20good.%20It%E2%80%99s%20hard%20to%20stop%20because%20it%20never%20tells%20you%20when%20you%E2%80%99re%20done.&url=https://botchedwaffle.com/originals/doom-scrolling-stopping-problem.html" target="_blank" rel="noopener noreferrer">X / Twitter</a>
+      <a class="share-btn" href="https://www.linkedin.com/sharing/share-offsite/?url=https://botchedwaffle.com/originals/doom-scrolling-stopping-problem.html" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+      <button class="share-btn" id="nativeShareBtn" style="display:none">Share</button>
+    </div>
+  </div>
+
   <!-- Newsletter CTA -->
   <div class="newsletter-cta">
     <h3>Like this? Get the next one in your inbox.</h3>
@@ -307,6 +366,28 @@
   window.addEventListener('scroll', () => {
     btn.classList.toggle('visible', window.scrollY > 400);
   }, { passive: true });
+</script>
+<script>
+  // Copy Link
+  document.getElementById('copyLinkBtn').addEventListener('click', function () {
+    navigator.clipboard.writeText(window.location.href).then(function () {
+      const copyBtn = document.getElementById('copyLinkBtn');
+      copyBtn.textContent = 'Copied!';
+      setTimeout(function () { copyBtn.textContent = 'Copy Link'; }, 2000);
+    });
+  });
+
+  // Native Share (mobile only)
+  var nativeShareBtn = document.getElementById('nativeShareBtn');
+  if (navigator.share) {
+    nativeShareBtn.style.display = 'inline-block';
+    nativeShareBtn.addEventListener('click', function () {
+      navigator.share({
+        title: "The Feed Isn\u2019t Addictive. It\u2019s Unfinishable.",
+        url: window.location.href
+      });
+    });
+  }
 </script>
 
 </body>

@@ -271,7 +271,7 @@
       display: flex;
       align-items: baseline;
       gap: 1rem;
-      margin-bottom: 1.2rem;
+      margin-bottom: 0.75rem;
       padding-bottom: 0.5rem;
       border-bottom: 2px solid var(--ink);
     }
@@ -305,7 +305,7 @@
 
     /* ─── 3-COL FEED GRID ─── */
     .feed-section {
-      margin-bottom: 3rem;
+      margin-bottom: 2rem;
       scroll-margin-top: 200px; /* clears full sticky header: masthead-top ~40px + masthead-logo ~125px + nav ~37px */
     }
 
@@ -315,10 +315,8 @@
 
     .feed-grid-3 {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 1.5px;
-      background: var(--rule);
-      border: 1.5px solid var(--rule);
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.25rem;
     }
 
     .feed-card {
@@ -327,7 +325,7 @@
       cursor: pointer;
       transition: background 0.15s;
       position: relative;
-      min-height: 260px;
+      min-height: 240px;
       display: flex;
       flex-direction: column;
     }
@@ -558,6 +556,10 @@
       .hero-main { grid-column: 1; border-right: none; border-bottom: 1px solid var(--rule); }
       .opinion-block { grid-template-columns: 1fr; }
       footer { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 1024px) {
+      .feed-grid-3 { grid-template-columns: repeat(2, 1fr); gap: 1.25rem; }
     }
 
     @media (max-width: 600px) {

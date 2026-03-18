@@ -69,6 +69,13 @@
       color: var(--paper);
     }
 
+    /* ─── ARTICLE DIVIDER ─── */
+    .article-divider {
+      border: none;
+      border-top: 1px solid var(--rule);
+      margin: 1.25rem 0;
+    }
+
     /* ─── HEADLINE ─── */
     .article-headline {
       font-family: 'Playfair Display', serif;
@@ -77,7 +84,7 @@
       line-height: 1.12;
       letter-spacing: -0.02em;
       color: var(--ink);
-      margin-bottom: 1.1rem;
+      margin-bottom: 0;
     }
 
     /* ─── LEDE ─── */
@@ -86,7 +93,7 @@
       color: #333;
       line-height: 1.75;
       font-weight: 400;
-      margin-bottom: 1.5rem;
+      margin-bottom: 0;
       border-left: 3px solid var(--rust);
       padding-left: 1.25rem;
     }
@@ -99,7 +106,7 @@
       align-items: center;
       flex-wrap: nowrap;
       gap: 1rem;
-      margin-bottom: 2rem;
+      margin-bottom: 0;
     }
     .article-byline strong { color: var(--rust); font-weight: 500; }
 
@@ -230,13 +237,11 @@
 
   <a href="../archive/psychology-behavior.html" class="article-breadcrumb">← Back to Psychology &amp; Behavior</a>
 
-  <div class="article-badges">
-    <span class="badge-section">Psychology &amp; Behavior</span>
-  </div>
-
   <h1 class="article-headline">The Feed Isn't Addictive. It's Unfinishable.</h1>
+  <hr class="article-divider">
 
   <p class="article-lede">Doom-scrolling isn't a dopamine problem. It's a stopping problem. The feed is built to remove every cue that tells your brain it's safe to disengage — and once you see that, the standard explanation starts to look incomplete.</p>
+  <hr class="article-divider">
 
   <div class="article-byline">
     <span>By <strong>Jeff Roberts</strong>&nbsp;&nbsp;·&nbsp;&nbsp;March 18, 2026</span>
@@ -248,6 +253,7 @@
       <button class="share-btn" id="nativeShareBtn" style="display:none">Share</button>
     </div>
   </div>
+  <hr class="article-divider">
 
   <div class="article-body">
 

@@ -93,20 +93,13 @@
 
     /* ─── BYLINE ─── */
     .article-byline {
-      font-family: 'DM Mono', monospace;
-      font-size: 11px;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      padding-bottom: 1.5rem;
-      border-bottom: 2px solid var(--ink);
-      margin-bottom: 2.75rem;
       display: flex;
       flex-direction: row;
       justify-content: space-between;
       align-items: center;
       flex-wrap: nowrap;
       gap: 1rem;
+      margin-bottom: 2rem;
     }
     .article-byline strong { color: var(--rust); font-weight: 500; }
 
@@ -172,10 +165,12 @@
     .cta-btn:hover { opacity: 0.82; }
 
     /* ─── SHARE BUTTONS ─── */
-    .share-buttons {
+    .share-bar {
       display: flex;
-      gap: 0.375rem;
-      flex-wrap: wrap;
+      flex-direction: row;
+      align-items: center;
+      gap: 0.4rem;
+      flex-shrink: 0;
     }
 
     .share-btn {
@@ -245,7 +240,7 @@
 
   <div class="article-byline">
     <span>By <strong>Jeff Roberts</strong>&nbsp;&nbsp;·&nbsp;&nbsp;March 18, 2026</span>
-    <div class="share-buttons">
+    <div class="share-bar">
       <button class="share-btn" id="copyLinkBtn">Copy Link</button>
       <a class="share-btn" href="mailto:?subject=The%20Feed%20Isn%E2%80%99t%20Addictive.%20It%E2%80%99s%20Unfinishable.&body=Thought%20you%27d%20find%20this%20interesting%3A%20https%3A%2F%2Fbotchedwaffle.com%2Foriginals%2Fdoom-scrolling-stopping-problem.html">Email</a>
       <a class="share-btn" href="https://twitter.com/intent/tweet?text=Doom-scrolling%20is%20not%20hard%20to%20stop%20because%20it%20feels%20good.%20It%E2%80%99s%20hard%20to%20stop%20because%20it%20never%20tells%20you%20when%20you%E2%80%99re%20done.&url=https://botchedwaffle.com/originals/doom-scrolling-stopping-problem.html" target="_blank" rel="noopener noreferrer">X / Twitter</a>

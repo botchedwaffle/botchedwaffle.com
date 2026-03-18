@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Feed Isn't Addictive. It's Unfinishable. — BotchedWaffle</title>
+  <meta name="description" content="Doom-scrolling isn't a dopamine problem. It's a stopping problem. The feed is built to remove every cue that tells your brain it's safe to disengage — and once you see that, the standard explanation starts to look incomplete." />
+  <meta property="og:title" content="The Feed Isn't Addictive. It's Unfinishable." />
+  <meta property="og:description" content="Doom-scrolling isn't a dopamine problem. It's a stopping problem. The feed is built to remove every cue that tells your brain it's safe to disengage." />
+  <meta property="og:url" content="https://botchedwaffle.com/originals/doom-scrolling-stopping-problem.html" />
+  <meta property="og:type" content="article" />
+  <meta name="author" content="Jeff Roberts" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../archive/archive.css" />
+  <style>
+    /* ─── ARTICLE PAGE LAYOUT ─── */
+    .article-container {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 2.5rem 2rem 5rem;
+    }
+
+    .article-breadcrumb {
+      display: inline-flex;
+      align-items: center;
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      text-decoration: none;
+      margin-bottom: 2rem;
+      transition: color 0.15s;
+    }
+    .article-breadcrumb:hover { color: var(--rust); }
+
+    /* ─── BADGES ─── */
+    .article-badges {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+    }
+
+    .badge-original {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      padding: 0.2rem 0.6rem;
+      border-radius: 2px;
+      background: var(--rust);
+      color: #fff;
+    }
+
+    .badge-section {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      padding: 0.2rem 0.55rem;
+      border-radius: 2px;
+      background: var(--ink);
+      color: var(--paper);
+    }
+
+    /* ─── HEADLINE ─── */
+    .article-headline {
+      font-family: 'Playfair Display', serif;
+      font-weight: 900;
+      font-size: clamp(1.9rem, 4.5vw, 2.9rem);
+      line-height: 1.12;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      margin-bottom: 1.1rem;
+    }
+
+    /* ─── LEDE ─── */
+    .article-lede {
+      font-size: 1.075rem;
+      color: #333;
+      line-height: 1.75;
+      font-weight: 400;
+      margin-bottom: 1.5rem;
+      border-left: 3px solid var(--rust);
+      padding-left: 1.25rem;
+    }
+
+    /* ─── BYLINE ─── */
+    .article-byline {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      padding-bottom: 1.5rem;
+      border-bottom: 2px solid var(--ink);
+      margin-bottom: 2.75rem;
+    }
+    .article-byline strong { color: var(--rust); font-weight: 500; }
+
+    /* ─── BODY COPY ─── */
+    .article-body p {
+      font-size: 1.0625rem;
+      line-height: 1.82;
+      color: #1a1a1a;
+      margin-bottom: 1.6rem;
+    }
+
+    .article-body h2 {
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      font-size: 1.3rem;
+      letter-spacing: -0.01em;
+      line-height: 1.25;
+      color: var(--ink);
+      margin-top: 2.75rem;
+      margin-bottom: 0.9rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--rule);
+    }
+
+    /* ─── NEWSLETTER CTA ─── */
+    .newsletter-cta {
+      margin-top: 3.5rem;
+      padding: 2rem 2.5rem;
+      background: var(--cream);
+      border: 1.5px solid var(--rule);
+      border-top: 3px solid var(--rust);
+    }
+
+    .newsletter-cta h3 {
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+      color: var(--ink);
+    }
+
+    .newsletter-cta p {
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 1.25rem;
+      line-height: 1.65;
+    }
+
+    .cta-btn {
+      display: inline-block;
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #fff;
+      background: var(--rust);
+      text-decoration: none;
+      padding: 0.7rem 1.6rem;
+      border-radius: 2px;
+      transition: opacity 0.15s;
+    }
+    .cta-btn:hover { opacity: 0.82; }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 600px) {
+      .article-container { padding: 1.5rem 1rem 3rem; }
+      .newsletter-cta    { padding: 1.5rem 1.25rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="archive-header">
+  <div class="archive-topbar">
+    <a href="https://botchedwaffle.com/" class="archive-wordmark">Botched<span>Waffle</span></a>
+    <span class="archive-label">Original</span>
+  </div>
+  <nav class="section-nav">
+    <a href="../archive/history-origins.html">History &amp; Origins</a>
+    <a href="../archive/psychology-behavior.html" class="active">Psychology &amp; Behavior</a>
+    <a href="../archive/science-nature.html">Science &amp; Nature</a>
+    <a href="../archive/food-culture.html">Food &amp; Culture</a>
+    <a href="../archive/technology-systems.html">Technology &amp; Systems</a>
+    <a href="../archive/rabbit-hole.html">The Rabbit Hole</a>
+  </nav>
+</header>
+
+<div class="article-container">
+
+  <a href="../archive/psychology-behavior.html" class="article-breadcrumb">← Back to Psychology &amp; Behavior</a>
+
+  <div class="article-badges">
+    <span class="badge-original">Original</span>
+    <span class="badge-section">Psychology &amp; Behavior</span>
+  </div>
+
+  <h1 class="article-headline">The Feed Isn't Addictive. It's Unfinishable.</h1>
+
+  <p class="article-lede">Doom-scrolling isn't a dopamine problem. It's a stopping problem. The feed is built to remove every cue that tells your brain it's safe to disengage — and once you see that, the standard explanation starts to look incomplete.</p>
+
+  <div class="article-byline">
+    By <strong>Jeff Roberts</strong>&nbsp;&nbsp;·&nbsp;&nbsp;March 18, 2026
+  </div>
+
+  <div class="article-body">
+
+    <p>You check your phone for one thing. Twenty minutes later you feel worse, not better, and somehow still not done. That's the part the dopamine story can't fully explain.</p>
+
+    <p>Doom-scrolling is not hard to stop because it feels good. It's hard to stop because it never tells you when you're done.</p>
+
+    <p>And once you see that, the dopamine story starts to look incomplete.</p>
+
+    <p>That's why the standard explanation feels off. Doom-scrolling usually doesn't feel good while you're doing it. It feels tense, compulsive, unfinished. That should tell us something. The trap is not just reward. It's the absence of resolution.</p>
+
+    <h2>The stopping cue problem</h2>
+
+    <p>Most human activities have natural endpoints built in. A meal ends when the food is gone. A conversation ends when there's a natural break. An episode ends when the credits roll. These are not willpower moments. They are structural. The activity itself tells you it's over.</p>
+
+    <p>The feed has no such structure. It has infinite inventory, a personalization engine that ensures the next item always has some relevance to you, and zero friction between one piece of content and the next. There's no plate that empties. No credits. No pause.</p>
+
+    <p>What fills that void is uncertainty. And the brain does not like leaving uncertainty unresolved.</p>
+
+    <h2>Why doom content is different</h2>
+
+    <p>This is where doom-scrolling has an extra trap built in. The next post does not just promise novelty. It promises relevance. It might explain what just happened. It might tell you what to worry about. It might contain the update that finally makes the story make sense.</p>
+
+    <p>That's why stopping feels premature. You're not walking away from entertainment. You're walking away from unresolved information.</p>
+
+    <h2>This isn't about weakness</h2>
+
+    <p>Here's the part the dopamine story gets subtly wrong: it implies a failure of resistance. You had a craving, you indulged it, you knew better and did it anyway. Moral failure with a neuroscience veneer.</p>
+
+    <p>The stopping problem frame says something different. You weren't failing to resist pleasure. You were responding rationally to an environment engineered to eliminate the signals that normally allow you to disengage. The behavior is not irrational. The environment is adversarial.</p>
+
+    <p>That difference matters. One implies you need more willpower. The other implies you're operating exactly as designed.</p>
+
+    <h2>What this means practically</h2>
+
+    <p>If the problem is structural, the fix has to be structural. Any tool that creates an endpoint will work better than one that simply asks for more discipline. A timer, a friction point, a rule that creates a clean stopping cue. These feel crude, but they work because they are doing the job the feed refuses to do.</p>
+
+    <p>It's not a willpower solution. It's a design patch.</p>
+
+    <h2>The uncomfortable part</h2>
+
+    <p>Once you see the feed this way, as an environment engineered to defeat your brain's normal off-switch, the design starts to look quite deliberate. The infinite scroll was a conscious product decision. The removal of natural stopping points was not an accident or a side effect. It was a choice made because users who hit an endpoint stop using the product, and users who never hit an endpoint don't.</p>
+
+    <p>You aren't weak. You aren't broken. You're using a product that was specifically designed to be unfinishable. The people who built it know exactly what they removed and why they removed it.</p>
+
+    <p>The feed doesn't need to addict you. It only needs to keep you from ever feeling done.</p>
+
+  </div><!-- /.article-body -->
+
+  <!-- Newsletter CTA -->
+  <div class="newsletter-cta">
+    <h3>Like this? Get the next one in your inbox.</h3>
+    <p>BotchedWaffle originals, curated reads, and the occasional uncomfortable idea — no more than once a week.</p>
+    <a href="https://botchedwaffle.beehiiv.com/subscribe" class="cta-btn" target="_blank" rel="noopener noreferrer">Subscribe free →</a>
+  </div>
+
+</div><!-- /.article-container -->
+
+<footer>
+  <div class="footer-brand">
+    <div class="brand-name">Botched<span>Waffle</span></div>
+    <p>A curated digest of the stories that matter. No algorithm. No clickbait. Just good journalism, found and filtered by hand.</p>
+  </div>
+  <div class="footer-col">
+    <h4>Sections</h4>
+    <ul>
+      <li><a href="../archive/history-origins.html">History &amp; Origins</a></li>
+      <li><a href="../archive/psychology-behavior.html">Psychology &amp; Behavior</a></li>
+      <li><a href="../archive/science-nature.html">Science &amp; Nature</a></li>
+      <li><a href="../archive/food-culture.html">Food &amp; Culture</a></li>
+      <li><a href="../archive/technology-systems.html">Technology &amp; Systems</a></li>
+      <li><a href="../archive/rabbit-hole.html">The Rabbit Hole</a></li>
+    </ul>
+  </div>
+  <div class="footer-col">
+    <h4>About</h4>
+    <ul>
+      <li><a href="https://botchedwaffle.com/">Home</a></li>
+      <li><a href="https://botchedwaffle.com/">About this site</a></li>
+      <li><a href="https://botchedwaffle.com/">How we curate</a></li>
+      <li><a href="https://botchedwaffle.com/">Contact</a></li>
+    </ul>
+  </div>
+</footer>
+<div class="footer-bottom">
+  <p>© 2026 BotchedWaffle.com — Independent curation</p>
+  <p>No tracking · No ads · No nonsense</p>
+</div>
+
+<button class="back-to-top" id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑ Top</button>
+
+<script>
+  const btn = document.getElementById('backToTop');
+  window.addEventListener('scroll', () => {
+    btn.classList.toggle('visible', window.scrollY > 400);
+  }, { passive: true });
+</script>
+
+</body>
+</html>

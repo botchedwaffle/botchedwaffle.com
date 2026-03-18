@@ -102,10 +102,11 @@
       border-bottom: 2px solid var(--ink);
       margin-bottom: 2.75rem;
       display: flex;
+      flex-direction: row;
       justify-content: space-between;
       align-items: center;
-      flex-wrap: wrap;
-      gap: 0.5rem;
+      flex-wrap: nowrap;
+      gap: 1rem;
     }
     .article-byline strong { color: var(--rust); font-weight: 500; }
 
@@ -204,7 +205,7 @@
     @media (max-width: 600px) {
       .article-container { padding: 1.5rem 1rem 3rem; }
       .newsletter-cta    { padding: 1.5rem 1.25rem; }
-      .article-byline    { flex-direction: column; align-items: flex-start; }
+      .article-byline    { flex-wrap: wrap; }
     }
   </style>
   <!-- Privacy-friendly analytics by Plausible -->
@@ -219,7 +220,6 @@
 <header class="archive-header">
   <div class="archive-topbar">
     <a href="https://botchedwaffle.com/" class="archive-wordmark">Botched<span>Waffle</span></a>
-    <span class="archive-label">Original</span>
   </div>
   <nav class="section-nav">
     <a href="../archive/history-origins.html">History &amp; Origins</a>
@@ -236,7 +236,6 @@
   <a href="../archive/psychology-behavior.html" class="article-breadcrumb">← Back to Psychology &amp; Behavior</a>
 
   <div class="article-badges">
-    <span class="badge-original">Original</span>
     <span class="badge-section">Psychology &amp; Behavior</span>
   </div>
 

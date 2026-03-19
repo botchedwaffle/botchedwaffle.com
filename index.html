@@ -74,6 +74,18 @@
       text-align: center;
       padding: 1rem 0;
     }
+    .masthead-lockup {
+      display: inline-flex;
+      align-items: center;
+      gap: 16px;
+      justify-content: center;
+    }
+    .masthead-mark {
+      width: 52px;
+      height: 52px;
+      display: block;
+      flex-shrink: 0;
+    }
 
     .masthead-logo h1 {
       font-family: 'Lora', serif;
@@ -603,7 +615,10 @@
     <span class="tagline-top">Independent · Curated · Daily</span>
   </div>
   <div class="masthead-logo">
-    <h1>Botched<span>Waffle</span></h1>
+    <div class="masthead-lockup">
+      <img src="/assets/brand/bw-mark-light.svg" alt="BotchedWaffle" class="masthead-mark" />
+      <h1>Botched<span>Waffle</span></h1>
+    </div>
     <p class="masthead-tagline">The morning digest you didn't know you needed</p>
   </div>
   <nav class="section-nav">
